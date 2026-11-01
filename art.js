@@ -19,6 +19,9 @@ const ART = (() => {
     <radialGradient id="glow"><stop offset="0" stop-color="#ffd37e" stop-opacity=".8"/><stop offset="1" stop-color="#ffd37e" stop-opacity="0"/></radialGradient>
     <radialGradient id="flame" cx=".5" cy=".75" r=".65"><stop offset="0" stop-color="#fff7c8"/><stop offset=".5" stop-color="#ffc73a"/><stop offset="1" stop-color="#f26a0f"/></radialGradient>
     <linearGradient id="clay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d98a4a"/><stop offset="1" stop-color="#9c4f22"/></linearGradient>
+    <symbol id="jas" viewBox="-7 -7 14 14">${Array.from({length:5},(_,i)=>`<ellipse cy="-3.6" rx="2.6" ry="3.9" fill="#fffef8" stroke="#e6d9bb" stroke-width=".4" transform="rotate(${i*72})"/>`).join("")}<circle r="1.5" fill="#f1cf62"/></symbol>
+    <symbol id="jasP" viewBox="-7 -7 14 14">${Array.from({length:5},(_,i)=>`<ellipse cy="-3.6" rx="2.6" ry="3.9" fill="#f4a0b6" stroke="#d1708c" stroke-width=".4" transform="rotate(${i*72})"/>`).join("")}<circle r="1.5" fill="#fbe3a0"/></symbol>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6df9a"/><stop offset=".45" stop-color="#c9923a"/><stop offset="1" stop-color="#7a4f12"/></linearGradient>
     <radialGradient id="coco" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#b57a3f"/><stop offset="1" stop-color="#5b3416"/></radialGradient>
   </defs></svg>`;
 
@@ -112,5 +115,49 @@ const ART = (() => {
   const divider = () => `<svg viewBox="0 0 240 24" aria-hidden="true"><defs><linearGradient id="dv" x1="0" x2="1"><stop offset="0" stop-color="#b98a3c" stop-opacity="0"/><stop offset="1" stop-color="#b98a3c"/></linearGradient><linearGradient id="dv2" x1="1" x2="0"><stop offset="0" stop-color="#b98a3c" stop-opacity="0"/><stop offset="1" stop-color="#b98a3c"/></linearGradient></defs><path d="M10 12H104" stroke="url(#dv)"/><path d="M230 12H136" stroke="url(#dv2)"/><path d="M120 4l8 8l-8 8l-8-8z" fill="none" stroke="#b98a3c"/><circle cx="120" cy="12" r="2" fill="#b98a3c"/><circle cx="106" cy="12" r="1.5" fill="#b98a3c"/><circle cx="134" cy="12" r="1.5" fill="#b98a3c"/></svg>`;
   const pin = () => `<svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 29C5 20 2 15.500 2 11a10 10 0 0 1 20 0c0 4.500-3 9-10 18z" fill="none" stroke="#b98a3c" stroke-width="1.5"/><circle cx="12" cy="11" r="3.600" fill="#8c1238"/></svg>`;
 
-  return { defs, toran, scene, leaves, mandala, star, heart, divider, pin };
+    /* ---- temple door pieces ---- */
+  const lotus = () => `<svg viewBox="0 0 100 100" aria-hidden="true" fill="#a8703a" stroke="#2c1608" stroke-width="1.3" stroke-linejoin="round">
+    <path d="M50 14C60 30 62 52 50 72C38 52 40 30 50 14Z"/><path d="M50 72C34 64 20 48 16 30C34 34 46 50 50 72Z"/><path d="M50 72C66 64 80 48 84 30C66 34 54 50 50 72Z"/>
+    <path d="M50 72C28 72 12 62 6 48C24 46 42 56 50 72Z" fill="#935d2e"/><path d="M50 72C72 72 88 62 94 48C76 46 58 56 50 72Z" fill="#935d2e"/>
+    <path d="M50 72C42 80 40 88 50 94C60 88 58 80 50 72Z" fill="#b57b42"/><path d="M50 22C54 36 54 50 50 62" fill="none" stroke="#e0b87a" stroke-width=".9"/></svg>`;
+  const gopuram = () => `<svg viewBox="0 0 100 100" aria-hidden="true" fill="#a8703a" stroke="#2c1608" stroke-width="1.3" stroke-linejoin="round">
+    <path d="M47 6h6v8h-6z"/><path d="M38 14h24l4 10H34z"/><path d="M32 24h36l4 12H28z"/><path d="M26 36h48l5 14H21z"/><path d="M20 50h60l6 16H14z"/><path d="M12 66h76v22H12z"/>
+    <path d="M44 88V74a6 6 0 0 1 12 0v14z" fill="#3a2010"/><path d="M26 56h6v6h-6zM68 56h6v6h-6zM44 42h12v5H44z" fill="#3a2010" stroke="none"/></svg>`;
+  const bell = () => `<svg viewBox="0 0 64 112" aria-hidden="true"><path d="M32 0V30" stroke="#6e4d1c" stroke-width="2.4" stroke-dasharray="3 2"/><circle cx="32" cy="32" r="6" fill="url(#brass)"/>
+    <path d="M12 92C12 62 20 44 32 40C44 44 52 62 52 92Z" fill="url(#brass)" stroke="#6b4510" stroke-width="1"/><path d="M20 90C20 66 25 54 30 50" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.4" stroke-linecap="round"/>
+    <rect x="8" y="90" width="48" height="9" rx="4.5" fill="url(#brass)" stroke="#6b4510" stroke-width="1"/><circle cx="32" cy="105" r="5.5" fill="url(#brass)"/></svg>`;
+  const garland = () => {
+    let s = "", back = "";
+    const q = (t, x0, y0, cx, cy, x2, y2) => [(1 - t) ** 2 * x0 + 2 * (1 - t) * t * cx + t * t * x2, (1 - t) ** 2 * y0 + 2 * (1 - t) * t * cy + t * t * y2];
+    for (let i = 0; i <= 36; i++) {
+      const [x, y] = q(i / 36, 30, 16, 215, 112, 400, 16), p = i % 4 === 2, z = p ? 15 : 17;
+      back += `<ellipse cx="${f(x)}" cy="${f(y + 3)}" rx="9" ry="4.5" fill="#3c7a2a" transform="rotate(${(i % 2 ? 24 : -24)} ${f(x)} ${f(y)})"/>`;
+      s += `<use href="#${p ? "jasP" : "jas"}" x="${f(x - z / 2)}" y="${f(y - z / 2)}" width="${z}" height="${z}"/>`;
+    }
+    let d = "";
+    [[.1, 46], [.26, 58], [.5, 50], [.74, 58], [.9, 46]].forEach(([t, len]) => {
+      const [x, y] = q(t, 30, 16, 215, 112, 400, 16);
+      d += `<path d="M${f(x)} ${f(y)}V${f(y + len)}" stroke="#7aa05a" stroke-width="1.2"/>`;
+      for (let k = 1; k <= Math.floor(len / 11); k++) d += `<use href="#${k % 3 === 0 ? "jasP" : "jas"}" x="${f(x - 7)}" y="${f(y + k * 11 - 7)}" width="14" height="14"/>`;
+      d += `<use href="#jasP" x="${f(x - 8)}" y="${f(y + len - 4)}" width="16" height="16"/>`;
+    });
+    return `<svg viewBox="0 0 430 190" aria-hidden="true">${back}${d}${s}</svg>`;
+  };
+  const strand = () => {
+    let s = '<path d="M11 0V300" stroke="#7aa05a" stroke-width="1.2"/>';
+    for (let i = 0; i < 24; i++) s += `<use href="#${i % 6 === 4 ? "jasP" : "jas"}" x="${3 + (i % 2 ? 1.5 : -1.5)}" y="${f(2 + i * 12)}" width="16" height="16"/>`;
+    return `<svg viewBox="0 0 22 304" aria-hidden="true">${s}<use href="#jasP" x="2" y="288" width="18" height="18"/></svg>`;
+  };
+  const lamp = () => {
+    let s = '<svg viewBox="0 0 90 250" aria-hidden="true"><ellipse cx="45" cy="239" rx="34" ry="8" fill="url(#brass)" stroke="#6b4510"/><ellipse cx="45" cy="229" rx="25" ry="7" fill="url(#brass)" stroke="#6b4510"/>';
+    s += '<path d="M39 228L41 84H49L51 228Z" fill="url(#brass)" stroke="#6b4510"/>';
+    [196, 160, 124].forEach((y, i) => (s += `<ellipse cx="45" cy="${y}" rx="${15 - i * 2}" ry="5" fill="url(#brass)" stroke="#6b4510"/>`));
+    s += '<ellipse cx="45" cy="80" rx="38" ry="8" fill="url(#brass)" stroke="#6b4510"/><path d="M40 80C40 60 42 46 45 40C48 46 50 60 50 80Z" fill="url(#brass)" stroke="#6b4510"/><circle cx="45" cy="36" r="5" fill="url(#brass)"/>';
+    [10, 27, 45, 63, 80].forEach((x, i) => {
+      const y = 78 - (i % 2 ? 6 : 0);
+      s += `<ellipse cx="${x}" cy="${y - 20}" rx="14" ry="14" fill="url(#glow)" class="flame-glow"/><path class="flame" d="M${x} ${y - 30}C${x + 5} ${y - 22} ${x + 5} ${y - 14} ${x} ${y - 9}C${x - 5} ${y - 14} ${x - 5} ${y - 22} ${x} ${y - 30}Z" fill="url(#flame)"/><path d="M${x - 7} ${y - 8}C${x - 5} ${y + 1} ${x + 5} ${y + 1} ${x + 7} ${y - 8}Z" fill="url(#brass)" stroke="#6b4510" stroke-width=".8"/>`;
+    });
+    return s + "</svg>";
+  };
+  return { lotus, gopuram, bell, garland, strand, lamp, defs, toran, scene, leaves, mandala, star, heart, divider, pin };
 })();
