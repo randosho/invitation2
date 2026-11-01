@@ -256,3 +256,8 @@ body.locked{overflow:hidden}
 @media (max-height:700px){.cover-names{font-size:46px}.cover-ganesha{height:64px}.cover-seal{width:88px;height:88px;margin:8px 0 2px}.cover-in{gap:6px;padding-bottom:70px}}
 @media(prefers-reduced-motion:reduce){#cover *{animation:none!important}}
 .cover-in{padding-top:36px}
+
+/* cover without the toran: the content is centred on its own */
+.cover-in{padding:0 24px 90px}
+#cover{justify-content:center}
+@media (max-height:700px){.cover-in{padding-bottom:70px}}
