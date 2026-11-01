@@ -170,3 +170,6 @@ form .btn{width:100%;margin-top:4px}
 .count .cap{color:#5a4636;font-weight:600}
 .tile small{color:#5a4636}
 .hint{color:#8a5410}
+
+.eyebrow{gap:10px}
+.eyebrow .ganesha{height:44px;width:auto;flex:none;margin:-4px 2px}

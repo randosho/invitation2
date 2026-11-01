@@ -21,8 +21,8 @@ const E = CONFIG.eventDate;
 ["bride", "bride2"].forEach((i) => ($(i).textContent = CONFIG.bride));
 ["groom", "groom2"].forEach((i) => ($(i).textContent = CONFIG.groom));
 $("dateText").textContent = `${pad(E.getDate())} · ${pad(E.getMonth() + 1)} · ${E.getFullYear()}`;
-$("seal").textContent = `${CONFIG.bride[0]}·${CONFIG.groom[0]}`;
-$("sign").textContent = `${CONFIG.bride} & ${CONFIG.groom}`;
+$("seal").textContent = `${CONFIG.groom[0]}·${CONFIG.bride[0]}`;
+$("sign").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
 $("mapBtn").href = CONFIG.mapUrl;
 $("events").innerHTML = CONFIG.events.map(([d, n, t]) =>
   `<li class="reveal"><div class="d"><b>${pad(d.getDate())}</b><small>${MON[d.getMonth()]}</small></div><div class="e"><h4>${n}</h4><p>${DAY[d.getDay()]}${t ? " · " + clock(d) : ""}</p></div></li>`).join("");
@@ -104,6 +104,6 @@ new IntersectionObserver((es, o) => es.some((e) => e.isIntersecting) && (setTime
   $("lDate").textContent = `${DAY[E.getDay()]}, ${E.getDate()} ${["January","February","March","April","May","June","July","August","September","October","November","December"][E.getMonth()]} ${E.getFullYear()}`;
   const f = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
   const end = new Date(E.getTime() + 2 * 3600e3);
-  $("calBtn").href = "https://calendar.google.com/calendar/render?" + new URLSearchParams({ action: "TEMPLATE", text: `${CONFIG.bride} & ${CONFIG.groom}: Lagna`, dates: `${f(E)}/${f(end)}`, details: "Wedding of " + CONFIG.bride + " & " + CONFIG.groom, location: CONFIG.mapUrl });
-  $("tag").textContent = `#${CONFIG.bride}Weds${CONFIG.groom}`;
+  $("calBtn").href = "https://calendar.google.com/calendar/render?" + new URLSearchParams({ action: "TEMPLATE", text: `${CONFIG.groom} & ${CONFIG.bride}: Lagna`, dates: `${f(E)}/${f(end)}`, details: "Wedding of " + CONFIG.groom + " & " + CONFIG.bride, location: CONFIG.mapUrl });
+  $("tag").textContent = `#${CONFIG.groom}Weds${CONFIG.bride}`;
 })();
