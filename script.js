@@ -21,7 +21,7 @@ const E = CONFIG.eventDate;
 ["bride", "bride2"].forEach((i) => ($(i).textContent = CONFIG.bride));
 ["groom", "groom2"].forEach((i) => ($(i).textContent = CONFIG.groom));
 $("dateText").textContent = `${pad(E.getDate())} · ${pad(E.getMonth() + 1)} · ${E.getFullYear()}`;
-$("seal").textContent = $("coverSeal").textContent = `${CONFIG.groom[0]}·${CONFIG.bride[0]}`;
+$("seal").textContent = `${CONFIG.groom[0]}·${CONFIG.bride[0]}`;
 $("coverNames").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
 $("coverDate").textContent = $("dateText").textContent;
 $("sign").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
@@ -112,14 +112,22 @@ new IntersectionObserver((es, o) => es.some((e) => e.isIntersecting) && (setTime
   $("tag").textContent = `#${CONFIG.groom}Weds${CONFIG.bride}`;
 })();
 
-/* cover: the first tap swings the doors open and starts the music (the tap is what lets the browser play sound) */
+/* cover: the first tap opens the temple doors and starts the music (the tap is what lets the browser play sound) */
 const cover = $("cover");
+for (let i = 0; i < 16; i++) {
+  const d = document.createElement("i"), dur = 9 + Math.random() * 9;
+  d.style.cssText = `left:${Math.random() * 100}%;--dx:${(Math.random() - 0.5) * 80}px;animation-duration:${dur}s;animation-delay:-${Math.random() * dur}s;opacity:0;transform:scale(${0.6 + Math.random() * 0.8})`;
+  $("cvDust").append(d);
+}
 function openCover() {
   if (cover.classList.contains("open")) return;
   wanted = true;
   tryPlay().catch(() => {});
+  const scene = $("cvScene"), sr = scene.getBoundingClientRect(), wr = $("cvWay").getBoundingClientRect();
+  scene.style.transformOrigin = `${wr.left + wr.width / 2 - sr.left}px ${wr.top + wr.height * 0.55 - sr.top}px`;
   cover.classList.add("open");
-  setTimeout(() => { document.body.classList.remove("locked"); window.scrollTo(0, 0); }, 900);
+  setTimeout(() => cover.classList.add("through"), 1250);
+  setTimeout(() => { document.body.classList.remove("locked"); window.scrollTo(0, 0); }, 1500);
   setTimeout(() => cover.classList.add("gone"), 1900);
   setTimeout(() => cover.remove(), 3100);
 }

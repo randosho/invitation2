@@ -12,45 +12,25 @@
 </head>
 <body class="locked">
 <div id="cover" role="button" tabindex="0" aria-label="Tap to open the invitation">
-  <div class="cover-frame">
-    <div class="wall"></div>
-    <div class="doors">
-      <div class="leaf lf">
-        <div class="pn p1"><span data-art="gopuram"></span></div>
-        <div class="pn p2"><span data-art="lotus"></span></div>
-        <div class="pn p3"><span data-art="lotus"></span></div>
-        <div class="handle"><i class="plate"></i><i class="ringh"></i></div>
+  <div class="cv-scene" id="cvScene">
+    <p class="cv-top">॥ शुभ विवाह ॥</p>
+    <div class="cv-stage">
+      <div class="cv-frame" data-art="doorFrame"></div>
+      <div class="cv-way" id="cvWay">
+        <div class="cv-light"></div>
+        <div class="cv-leaf lf" data-art="doorLeaf"></div>
+        <div class="cv-leaf rt" data-art="doorLeaf"></div>
       </div>
-      <div class="leaf rt">
-        <div class="pn p1"><span data-art="gopuram"></span></div>
-        <div class="pn p2"><span data-art="lotus"></span></div>
-        <div class="pn p3"><span data-art="lotus"></span></div>
-        <div class="handle"><i class="plate"></i><i class="ringh"></i></div>
-      </div>
+      <div class="cv-over" data-art="doorOver"></div>
     </div>
-    <div class="door-ui">
-      <div class="banner">
-        <p class="cover-kicker">You are cordially invited</p>
-        <p class="cover-names script" id="coverNames">Deepak &amp; Laxmi</p>
-        <p class="cover-date" id="coverDate"></p>
-        <div class="cover-seal">
-          <i class="ring"></i><i class="ring r2"></i>
-          <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i>
-          <span class="script" id="coverSeal">D·L</span>
-        </div>
-        <p class="cover-btn"><span>Tap to open</span></p>
-      </div>
+    <div class="cv-bottom">
+      <div class="cv-rangoli" data-art="rangoli"></div>
+      <p class="cv-names script" id="coverNames">Deepak &amp; Laxmi</p>
+      <p class="cv-date" id="coverDate"></p>
+      <p class="cv-hint">Tap to open</p>
     </div>
-    <img class="cover-ganesha" src="assets/ganesha-gold.png" alt="Shri Ganesh">
-    <div class="deco bell l" data-art="bell"></div><div class="deco bell r" data-art="bell"></div>
-    <div class="deco garland" data-art="garland"></div>
-    <div class="deco strand s1" data-art="strand"></div><div class="deco strand s2" data-art="strand"></div>
-    <div class="deco strand s3" data-art="strand"></div><div class="deco strand s4" data-art="strand"></div>
-    <img class="deco bl l" src="assets/banana-leaves.png" alt=""><img class="deco bl r" src="assets/banana-leaves.png" alt="">
-    <div class="deco lamp l" data-art="lamp"></div><div class="deco lamp r" data-art="lamp"></div>
-    <img class="cover-lamps" src="assets/footer-overlay.png" alt="">
   </div>
-  <div class="petals"></div>
+  <div class="cv-dust" id="cvDust"></div>
 </div>
 <button id="sound" class="sound" aria-label="Toggle music">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="mute" d="M16 9l5 6M21 9l-5 6"/></svg>
