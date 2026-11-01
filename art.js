@@ -115,132 +115,191 @@ const ART = (() => {
   const divider = () => `<svg viewBox="0 0 240 24" aria-hidden="true"><defs><linearGradient id="dv" x1="0" x2="1"><stop offset="0" stop-color="#b98a3c" stop-opacity="0"/><stop offset="1" stop-color="#b98a3c"/></linearGradient><linearGradient id="dv2" x1="1" x2="0"><stop offset="0" stop-color="#b98a3c" stop-opacity="0"/><stop offset="1" stop-color="#b98a3c"/></linearGradient></defs><path d="M10 12H104" stroke="url(#dv)"/><path d="M230 12H136" stroke="url(#dv2)"/><path d="M120 4l8 8l-8 8l-8-8z" fill="none" stroke="#b98a3c"/><circle cx="120" cy="12" r="2" fill="#b98a3c"/><circle cx="106" cy="12" r="1.5" fill="#b98a3c"/><circle cx="134" cy="12" r="1.5" fill="#b98a3c"/></svg>`;
   const pin = () => `<svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 29C5 20 2 15.500 2 11a10 10 0 0 1 20 0c0 4.500-3 9-10 18z" fill="none" stroke="#b98a3c" stroke-width="1.5"/><circle cx="12" cy="11" r="3.600" fill="#8c1238"/></svg>`;
 
-    /* ---- temple door (cover) ---- */
-  // carved relief: a dark copy below-right, a light copy above-left, then the wood face
-  const emboss = (c, face = "#6a3c1c") => `<g transform="translate(.9 1.1)" fill="rgba(16,6,1,.75)">${c}</g><g transform="translate(-.7 -.8)" fill="rgba(255,205,150,.30)">${c}</g><g fill="${face}">${c}</g>`;
-  const stud = (x, y, r = 2.4) => `<circle cx="${f(x + .6)}" cy="${f(y + .9)}" r="${r}" fill="rgba(0,0,0,.5)"/><circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="url(#dStud)"/>`;
+    /* ---- Tamil temple entrance (cover) ---- */
+  let rs = 11;
+  const rnd = () => (rs = (rs * 16807) % 2147483647) / 2147483647;
+  // carved relief: shadow copy below-right, highlight copy above-left, then the face
+  const emboss = (c, face = "#6a3c1c", dark = "rgba(16,6,1,.75)", light = "rgba(255,205,150,.30)") =>
+    `<g transform="translate(.8 1)" fill="${dark}">${c}</g><g transform="translate(-.6 -.7)" fill="${light}">${c}</g><g fill="${face}">${c}</g>`;
+  const ivory = (c) => emboss(c, "#eadcbd", "rgba(110,70,30,.45)", "rgba(255,255,255,.6)");
+  const goldE = (c) => emboss(c, "url(#dBrass)", "rgba(60,30,5,.6)", "rgba(255,244,210,.7)");
+  const stud = (x, y, r = 2.4) => `<circle cx="${f(x + .7)}" cy="${f(y + 1)}" r="${r}" fill="rgba(0,0,0,.5)"/><circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="url(#dStud)"/><circle cx="${f(x - r * .35)}" cy="${f(y - r * .4)}" r="${f(r * .3)}" fill="rgba(255,250,225,.85)"/>`;
   const rosette = (n = 8, pr = 3, pl = 7) => Array.from({ length: n }, (_, i) => `<ellipse cy="${-pl}" rx="${pr}" ry="${pl}" transform="rotate(${(i * 360) / n})"/>`).join("") + `<circle r="${pr}"/>`;
-  const lotusMedallion = () => {
-    let s = '<path fill-rule="evenodd" d="M-30 0a30 38 0 1 0 60 0a30 38 0 1 0 -60 0ZM-25.5 0a25.5 33 0 1 0 51 0a25.5 33 0 1 0 -51 0Z"/>';
-    for (let i = 0; i < 18; i++) { const t = (i / 18) * Math.PI * 2; s += `<circle cx="${f(Math.sin(t) * 22)}" cy="${f(-Math.cos(t) * 29)}" r="1.3"/>`; }
-    s += '<path d="M0 -22C7 -11 7 2 0 13C-7 2 -7 -11 0 -22Z"/><path d="M0 13C-9 8 -17 -3 -18 -14C-8 -11 -2 -2 0 13Z"/><path d="M0 13C9 8 17 -3 18 -14C8 -11 2 -2 0 13Z"/>';
-    s += '<path d="M0 14C-12 14 -21 7 -23 -2C-13 -4 -4 3 0 14Z"/><path d="M0 14C12 14 21 7 23 -2C13 -4 4 3 0 14Z"/><path d="M-13 17H13L9 22H-9Z"/>';
-    return s;
-  };
-  const archNiche = () => '<path fill-rule="evenodd" d="M-26 34V-6C-26 -24 -12 -33 0 -40C12 -33 26 -24 26 -6V34ZM-21 30V-5C-21 -19 -10 -27 0 -33C10 -27 21 -19 21 -5V30Z"/>' + `<g transform="translate(0 4)">${rosette(8, 2.6, 6.5)}</g>`;
-  const jaali = () => { let s = ""; for (let y = -42; y <= 42; y += 12) for (let x = -36; x <= 36; x += 12) s += `<path d="M${x} ${y - 5}L${x + 5} ${y}L${x} ${y + 5}L${x - 5} ${y}Z"/>`; return s; };
-  const panel = (x, y, w, h, motif, k) => {
-    const a = 3, b = 9, cx = x + w / 2, cy = y + h / 2;
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(10,4,1,.6)"/>
-      <path d="M${x + a} ${y + a}H${x + w - a}L${x + w - b} ${y + b}H${x + b}Z" fill="rgba(255,205,150,.2)"/>
-      <path d="M${x + a} ${y + a}L${x + b} ${y + b}V${y + h - b}L${x + a} ${y + h - a}Z" fill="rgba(255,205,150,.11)"/>
-      <path d="M${x + a} ${y + h - a}L${x + b} ${y + h - b}H${x + w - b}L${x + w - a} ${y + h - a}Z" fill="rgba(0,0,0,.42)"/>
-      <path d="M${x + w - a} ${y + a}L${x + w - b} ${y + b}V${y + h - b}L${x + w - a} ${y + h - a}Z" fill="rgba(0,0,0,.28)"/>
-      <rect x="${x + b}" y="${y + b}" width="${w - 2 * b}" height="${h - 2 * b}" fill="rgba(60,30,10,.3)"/>
-      <rect x="${x + b + 3}" y="${y + b + 3}" width="${w - 2 * b - 6}" height="${h - 2 * b - 6}" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>
-      <g transform="translate(${cx} ${cy}) scale(${k})">${emboss(motif)}</g>`;
-  };
-  const doorLeaf = () => {
-    let s = '<svg viewBox="0 0 120 400" preserveAspectRatio="none" aria-hidden="true">';
-    s += '<rect width="120" height="400" fill="#5a3115" filter="url(#dGrain)"/><rect width="120" height="400" fill="url(#dHinge)"/>';
-    s += '<rect x="2" y="2" width="116" height="396" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="2.5"/>';
-    s += panel(12, 14, 88, 98, archNiche(), 0.95) + panel(12, 124, 88, 140, lotusMedallion(), 1.05) + panel(12, 276, 88, 110, jaali(), 0.82);
-    [118, 270].forEach((y) => [26, 56, 86].forEach((x) => (s += stud(x, y, 2.2))));
-    s += '<rect x="111" y="0" width="9" height="400" fill="url(#dBrassV)" opacity=".92"/><rect x="110" y="0" width="1.2" height="400" fill="rgba(0,0,0,.55)"/>';
-    for (let y = 14; y <= 390; y += 24) s += stud(115.5, y, 1.7);
-    s += `<g transform="translate(90 196)"><circle r="9.5" fill="rgba(0,0,0,.45)" transform="translate(.8 1.2)"/><g fill="url(#dBrass)">${rosette(8, 3, 6.5)}</g><circle r="3.2" fill="url(#dStud)"/>
-      <circle cx="1" cy="16.5" r="10.5" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="3.4"/><circle cy="15" r="10.5" fill="none" stroke="url(#dBrass)" stroke-width="3.2"/></g>`;
-    return s + "</svg>";
-  };
-  const diya2 = (x, y) => `<ellipse cx="${x}" cy="${y - 20}" rx="20" ry="20" fill="url(#glow)" class="flame-glow"/>
-    <path class="flame" d="M${x} ${y - 29}C${x + 4} ${y - 22} ${x + 4} ${y - 16} ${x} ${y - 12}C${x - 4} ${y - 16} ${x - 4} ${y - 22} ${x} ${y - 29}Z" fill="url(#flame)"/>
-    <path d="M${x - 11} ${y - 11}C${x - 9} ${y - 1} ${x + 9} ${y - 1} ${x + 11} ${y - 11}Z" fill="url(#dBrass)" stroke="#5c3a0c" stroke-width=".7"/><ellipse cx="${x}" cy="${y - 11}" rx="11" ry="2" fill="#2e1906"/>`;
-  const doorFrame = () => {
-    let s = `<svg viewBox="0 0 400 560" aria-hidden="true"><defs>
-      <filter id="dGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.24" numOctaves="3" seed="7" result="n"/>
-        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .09  0 0 0 0 .045  0 0 0 0 .015  1.7 0 0 0 -.66" result="g"/>
-        <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge></filter>
-      <filter id="dBlur"><feGaussianBlur stdDeviation="1.6"/></filter>
-      <linearGradient id="dBrassV" x1="0" x2="1"><stop offset="0" stop-color="#6b4510"/><stop offset=".4" stop-color="#e9c46a"/><stop offset=".7" stop-color="#b8862e"/><stop offset="1" stop-color="#5c3a0c"/></linearGradient>
-      <linearGradient id="dBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6df9a"/><stop offset=".5" stop-color="#c9923a"/><stop offset="1" stop-color="#6b4510"/></linearGradient>
-      <radialGradient id="dStud" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff1c0"/><stop offset=".45" stop-color="#d9a441"/><stop offset="1" stop-color="#5c3a0c"/></radialGradient>
-      <linearGradient id="dHinge" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".42"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#ffcf90" stop-opacity=".06"/></linearGradient>
-      <linearGradient id="dStone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d6055"/><stop offset="1" stop-color="#2f2822"/></linearGradient>
-      <linearGradient id="dShadeV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
-    </defs>`;
-    const pil = (x) => {
-      let p = `<rect x="${x}" y="112" width="46" height="384" fill="#4a2711" filter="url(#dGrain)"/><rect x="${x}" y="112" width="46" height="384" fill="url(#dHinge)" opacity=".6"/>`;
-      [10, 20, 30].forEach((o) => (p += `<rect x="${x + o}" y="150" width="5" height="318" rx="2.5" fill="rgba(0,0,0,.42)"/><rect x="${x + o + 4}" y="150" width="1" height="318" fill="rgba(255,200,140,.12)"/>`));
-      p += `<rect x="${x - 5}" y="104" width="56" height="16" fill="#55301a" filter="url(#dGrain)"/><rect x="${x - 5}" y="117" width="56" height="3" fill="url(#dBrass)"/>`;
-      p += `<rect x="${x - 5}" y="490" width="56" height="32" fill="#55301a" filter="url(#dGrain)"/><rect x="${x - 5}" y="492" width="56" height="3" fill="url(#dBrass)"/>`;
-      return p;
-    };
-    s += pil(32) + pil(322);
-    // architrave around the opening, with a carved bead row
-    s += '<rect x="72" y="112" width="256" height="410" fill="#3a1d0b"/><rect x="72" y="112" width="256" height="410" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="1.5"/>';
-    let beads = "";
-    for (let y = 126; y < 518; y += 7) beads += `<circle cx="76" cy="${y}" r="1.7"/><circle cx="324" cy="${y}" r="1.7"/>`;
-    for (let x = 80; x <= 320; x += 7) beads += `<circle cx="${x}" cy="116" r="1.7"/>`;
-    s += emboss(beads, "#5a3216");
-    // lintel
-    s += '<rect x="20" y="44" width="360" height="70" fill="#4d2a12" filter="url(#dGrain)"/>';
-    s += '<rect x="20" y="58" width="360" height="1.5" fill="rgba(0,0,0,.45)"/><rect x="20" y="96" width="360" height="1.5" fill="rgba(0,0,0,.45)"/><rect x="20" y="97.5" width="360" height="1" fill="rgba(255,200,140,.15)"/>';
-    let sc = "";
-    for (let x = 22; x < 378; x += 12) sc += `<path d="M${x} 112a6 6 0 0 1 12 0Z"/>`;
-    s += emboss(sc, "#5e3418");
-    let ros = "";
-    [56, 96, 136, 264, 304, 344].forEach((x) => (ros += `<g transform="translate(${x} 77)">${rosette(8, 2.4, 6)}</g>`));
-    s += emboss(ros, "#64391a");
-    s += '<ellipse cx="200" cy="78" rx="30" ry="21" fill="#2a1406"/><ellipse cx="200" cy="78" rx="30" ry="21" fill="none" stroke="url(#dBrass)" stroke-width="2.2"/>';
-    s += '<image href="assets/ganesha-gold.png" x="186" y="60" width="28" height="36"/>';
-    // cornice and finial
-    s += '<rect x="10" y="30" width="380" height="16" fill="#5a3318" filter="url(#dGrain)"/><rect x="10" y="30" width="380" height="1.5" fill="rgba(255,210,150,.3)"/><rect x="10" y="44" width="380" height="2.5" fill="url(#dBrass)"/>';
-    s += '<path d="M190 30C186 22 190 15 200 13C210 15 214 22 210 30Z" fill="url(#dBrass)"/><path d="M196 13C196 8 198 4 200 1C202 4 204 8 204 13Z" fill="url(#dBrass)"/>';
-    s += '<rect x="34" y="114" width="332" height="26" fill="url(#dShadeV)" opacity=".7"/>';
-    // steps and diyas
-    s += '<rect x="24" y="522" width="352" height="18" fill="url(#dStone)"/><rect x="24" y="522" width="352" height="1.5" fill="rgba(255,230,200,.3)"/>';
-    s += '<rect x="8" y="540" width="384" height="20" fill="url(#dStone)" opacity=".85"/><rect x="8" y="540" width="384" height="1.5" fill="rgba(255,230,200,.22)"/>';
-    s += diya2(48, 524) + diya2(352, 524);
-    return s + "</svg>";
-  };
-  // jasmine strings (gajra) laid along a path: small cream buds, a rose bead and leaves now and then
-  const gajra = (pts) => {
-    let path = `M${pts.map((p) => p.map(f).join(" ")).join("L")}`, s = `<path d="${path}" transform="translate(1.6 3.2)" stroke="rgba(0,0,0,.5)" stroke-width="7" stroke-linecap="round" fill="none" filter="url(#dBlur)"/>`;
-    pts.forEach((p, i) => {
-      const q = pts[Math.min(i + 1, pts.length - 1)], o = pts[Math.max(i - 1, 0)], ang = (Math.atan2(q[1] - o[1], q[0] - o[0]) * 180) / Math.PI;
-      if (i % 28 === 14) {
-        s += `<ellipse cx="${f(p[0])}" cy="${f(p[1])}" rx="1.8" ry="4.6" fill="#4b7b33" transform="rotate(${f(ang + 140)} ${f(p[0])} ${f(p[1])}) translate(0 -3)"/><ellipse cx="${f(p[0])}" cy="${f(p[1])}" rx="1.8" ry="4.6" fill="#3f6d2b" transform="rotate(${f(ang + 40)} ${f(p[0])} ${f(p[1])}) translate(0 -3)"/>`;
-        s += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="3.4" fill="#9e2b45"/><circle cx="${f(p[0] - 1)}" cy="${f(p[1] - 1.1)}" r="1.2" fill="rgba(255,190,205,.55)"/>`;
-      } else {
-        s += `<ellipse cx="${f(p[0])}" cy="${f(p[1])}" rx="3" ry="4.1" fill="${i % 2 ? "#fffcf2" : "#efe6cf"}" stroke="rgba(140,120,80,.45)" stroke-width=".35" transform="rotate(${f(ang + 90)} ${f(p[0])} ${f(p[1])})"/>`;
-      }
-    });
-    return s;
-  };
+  const petal = (len, w) => `<path d="M0 0C${w} ${-len * .3} ${w} ${-len * .7} 0 ${-len}C${-w} ${-len * .7} ${-w} ${-len * .3} 0 0Z"/>`;
   const sampleQ = (x0, y0, cx, cy, x2, y2, step = 2.9) => {
     const L = Math.hypot(cx - x0, cy - y0) + Math.hypot(x2 - cx, y2 - cy), n = Math.ceil(L / step), out = [];
     for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; out.push([u * u * x0 + 2 * u * t * cx + t * t * x2, u * u * y0 + 2 * u * t * cy + t * t * y2]); }
     return out;
   };
-  const doorOver = () => {
-    let s = '<svg viewBox="0 0 400 560" aria-hidden="true"><rect class="lintel-shadow" x="80" y="120" width="240" height="40" fill="url(#dShadeV)"/>';
-    s += gajra(sampleQ(84, 118, 79, 240, 88, 352)) + gajra(sampleQ(316, 118, 321, 240, 312, 352));
-    const sw = sampleQ(86, 120, 200, 200, 314, 120);
-    [[0.27, 24], [0.5, 38], [0.73, 24]].forEach(([t, len]) => {
-      const p = sw[Math.round(t * (sw.length - 1))];
-      s += gajra(sampleQ(p[0], p[1], p[0], p[1] + len / 2, p[0], p[1] + len));
+  // the cusped (seven-lobed) arch over the doorway, in the 400x600 frame space
+  const archPts = (n = 140) => {
+    const pts = [];
+    for (let i = 0; i <= n; i++) {
+      const u = i / n, th = Math.PI * (1 - u), m = Math.abs(Math.sin(7 * Math.PI * u)), w = Math.min(1, u * 9, (1 - u) * 9), s = 1 - 0.085 * (1 - m) * w;
+      pts.push([200 + 100 * s * Math.cos(th), 250 - 75 * s * Math.sin(th)]);
+    }
+    return pts;
+  };
+  // the same opening as a clip-path polygon in percent of the doorway box (x 100-300, y 175-540)
+  const doorClip = () => "polygon(0% 100%," + archPts(90).map(([x, y]) => `${f((x - 100) / 2)}% ${f(((y - 175) / 365) * 100)}%`).join(",") + ",100% 100%)";
+  const diya2 = (x, y) => `<ellipse cx="${x}" cy="${y - 20}" rx="20" ry="20" fill="url(#glow)" class="flame-glow"/>
+    <path class="flame" d="M${x} ${y - 29}C${x + 4} ${y - 22} ${x + 4} ${y - 16} ${x} ${y - 12}C${x - 4} ${y - 16} ${x - 4} ${y - 22} ${x} ${y - 29}Z" fill="url(#flame)"/>
+    <path d="M${x - 11} ${y - 11}C${x - 9} ${y - 1} ${x + 9} ${y - 1} ${x + 11} ${y - 11}Z" fill="url(#dBrass)" stroke="#5c3a0c" stroke-width=".7"/><ellipse cx="${x}" cy="${y - 11}" rx="11" ry="2" fill="#2e1906"/>`;
+  const kalasam = (x, y) => `<path d="M${x - 7} ${y}C${x - 11} ${y - 8} ${x - 7} ${y - 15} ${x} ${y - 16}C${x + 7} ${y - 15} ${x + 11} ${y - 8} ${x + 7} ${y}Z" fill="url(#dBrass)" stroke="#6b4510" stroke-width=".6"/>
+    <rect x="${x - 4}" y="${y - 19}" width="8" height="3" rx="1" fill="url(#dBrass)"/><path d="M${x - 3} ${y - 19}C${x - 3} ${y - 24} ${x - 1} ${y - 28} ${x} ${y - 31}C${x + 1} ${y - 28} ${x + 3} ${y - 24} ${x + 3} ${y - 19}Z" fill="url(#dBrass)" stroke="#6b4510" stroke-width=".5"/>`;
+
+  const doorFrame = () => {
+    const ap = archPts(), inner = ap.map((p) => p.map(f).join(" ")).join("L");
+    let s = `<svg viewBox="0 0 400 600" aria-hidden="true"><defs>
+      <filter id="dGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.24" numOctaves="3" seed="7" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .18  0 0 0 0 .02  0 0 0 0 .04  1.6 0 0 0 -.66" result="g"/>
+        <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge></filter>
+      <filter id="dStoneTex" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .18  0 0 0 .18 0" result="g"/>
+        <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge></filter>
+      <filter id="dBlur"><feGaussianBlur stdDeviation="1.8"/></filter>
+      <linearGradient id="dBrassV" x1="0" x2="1"><stop offset="0" stop-color="#6b4510"/><stop offset=".4" stop-color="#e9c46a"/><stop offset=".7" stop-color="#b8862e"/><stop offset="1" stop-color="#5c3a0c"/></linearGradient>
+      <linearGradient id="dBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6df9a"/><stop offset=".5" stop-color="#c9923a"/><stop offset="1" stop-color="#6b4510"/></linearGradient>
+      <radialGradient id="dStud" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff3c8"/><stop offset=".4" stop-color="#dcaa48"/><stop offset="1" stop-color="#5c3a0c"/></radialGradient>
+      <linearGradient id="dHinge" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#ffcf90" stop-opacity=".05"/></linearGradient>
+      <linearGradient id="dIvory" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8efdc"/><stop offset="1" stop-color="#e3d0aa"/></linearGradient>
+      <linearGradient id="dIvoryV" x1="0" x2="1"><stop offset="0" stop-color="#cfb98f"/><stop offset=".35" stop-color="#f6ecd6"/><stop offset=".7" stop-color="#ead9b8"/><stop offset="1" stop-color="#c4ad82"/></linearGradient>
+      <linearGradient id="dStep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe3c9"/><stop offset="1" stop-color="#c8b28a"/></linearGradient>
+      <linearGradient id="dShadeV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0810" stop-opacity=".55"/><stop offset="1" stop-color="#2a0810" stop-opacity="0"/></linearGradient>
+      <radialGradient id="dWine" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#9a2447"/><stop offset="1" stop-color="#5a0f24"/></radialGradient>
+    </defs>`;
+    // ivory carved façade
+    s += '<rect x="22" y="50" width="356" height="492" fill="url(#dIvory)" filter="url(#dStoneTex)"/><rect x="22" y="50" width="356" height="492" fill="none" stroke="rgba(120,80,30,.35)"/>';
+    // cornice with dentils and a gold band, and a row of kalasam finials
+    s += '<rect x="12" y="40" width="376" height="14" fill="url(#dIvoryV)"/><rect x="12" y="52" width="376" height="2.5" fill="url(#dBrass)"/>';
+    let den = ""; for (let x = 26; x < 376; x += 10) den += `<rect x="${x}" y="57" width="6" height="7"/>`;
+    s += ivory(den);
+    [52, 126, 200, 274, 348].forEach((x) => (s += kalasam(x, 40)));
+    // spandrel carvings above the pillars
+    let sp = "";
+    [[64, 108], [336, 108]].forEach(([x, y]) => {
+      sp += `<g transform="translate(${x} ${y})">${rosette(12, 3, 11)}</g>`;
+      sp += `<g transform="translate(${x} ${y + 34})">${rosette(8, 2, 6)}</g>`;
     });
-    s += gajra(sw);
+    s += ivory(sp);
+    // pillars with a carved climbing vine, lotus capital and base
+    const pil = (x) => {
+      let p = `<rect x="${x}" y="176" width="56" height="326" fill="url(#dIvoryV)"/><rect x="${x + 10}" y="196" width="36" height="290" fill="rgba(150,110,60,.14)" stroke="rgba(120,80,30,.35)" stroke-width=".8"/>`;
+      let vine = "", d = "";
+      for (let y = 200; y <= 482; y += 2) d += `${y === 200 ? "M" : "L"}${f(x + 28 + 9 * Math.sin((y - 200) / 18))} ${y}`;
+      for (let y = 210, k = 0; y <= 474; y += 18, k++) {
+        const vx = x + 28 + 9 * Math.sin((y - 200) / 18), side = k % 2 ? 1 : -1;
+        vine += `<g transform="translate(${f(vx)} ${y}) rotate(${side * 58})">${petal(10, 3.6)}</g>`;
+      }
+      p += `<path d="${d}" fill="none" stroke="rgba(110,70,30,.42)" stroke-width="3.2" transform="translate(.8 1)"/><path d="${d}" fill="none" stroke="#e6d5b2" stroke-width="2.4"/>`;
+      p += ivory(vine);
+      p += `<rect x="${x - 6}" y="160" width="68" height="18" fill="url(#dIvoryV)"/><rect x="${x - 6}" y="176" width="68" height="2.5" fill="url(#dBrass)"/>`;
+      let cap = ""; for (let i = 0; i < 11; i++) cap += `<g transform="translate(${x - 2 + i * 6} 160)">${petal(8 - Math.abs(i - 5) * .4, 3.2)}</g>`;
+      p += goldE(cap);
+      p += `<rect x="${x - 6}" y="500" width="68" height="40" fill="url(#dIvoryV)"/><rect x="${x - 6}" y="502" width="68" height="2.5" fill="url(#dBrass)"/><rect x="${x - 6}" y="532" width="68" height="2.5" fill="url(#dBrass)"/>`;
+      return p;
+    };
+    s += pil(36) + pil(308);
+    // torana: the arch band between a smooth outer arch and the cusped opening
+    s += `<path d="M64 250A136 120 0 0 1 336 250H300L${inner.split("L").reverse().join("L")}Z" fill="url(#dIvory)" filter="url(#dStoneTex)"/>`;
+    let beads = "";
+    for (let i = 1; i < 30; i++) { const t = Math.PI * (1 - i / 30); beads += `<circle cx="${f(200 + 118 * Math.cos(t))}" cy="${f(250 - 98 * Math.sin(t))}" r="2"/>`; }
+    s += ivory(beads);
+    let flames = "";
+    for (let i = 0; i <= 30; i++) { const t = Math.PI * (1 - i / 30), big = i % 2 === 0; flames += `<g transform="translate(${f(200 + 137 * Math.cos(t))} ${f(250 - 121 * Math.sin(t))}) rotate(${f(90 - (t * 180) / Math.PI)})">${petal(big ? 15 : 10, big ? 5 : 3.6)}</g>`; }
+    s += goldE(flames);
+    s += '<path d="M64 250A136 120 0 0 1 336 250" fill="none" stroke="url(#dBrass)" stroke-width="2.6"/>';
+    s += `<path d="M100 540V250L${inner}V540" fill="none" stroke="url(#dBrass)" stroke-width="3"/><path d="M96 540V250" stroke="rgba(110,70,30,.4)" stroke-width="1"/><path d="M304 540V250" stroke="rgba(110,70,30,.4)" stroke-width="1"/>`;
+    // gold scrolls where the arch springs
+    const scroll = (x, dir) => `<g transform="translate(${x} 250) scale(${dir} 1)"><path fill-rule="evenodd" d="M0 0C0 -14 16 -16 18 -6C20 4 8 6 6 -1C5 -5 10 -6 11 -3C12 0 9 1 9 -1C8 3 14 3 15 -3C16 -11 4 -12 3 0Z"/></g>`;
+    s += goldE(scroll(84, 1) + scroll(316, -1));
+    // Ganesha medallion at the crown
+    s += '<circle cx="200" cy="128" r="26" fill="url(#dWine)"/><circle cx="200" cy="128" r="26" fill="none" stroke="url(#dBrass)" stroke-width="3.2"/><circle cx="200" cy="128" r="21.5" fill="none" stroke="rgba(246,223,154,.6)" stroke-width=".8"/>';
+    s += '<image href="assets/ganesha-gold.png" x="186" y="109" width="28" height="36"/>';
+    // steps and diyas
+    s += '<rect x="14" y="540" width="372" height="26" fill="url(#dStep)" filter="url(#dStoneTex)"/><rect x="14" y="540" width="372" height="1.5" fill="rgba(255,255,255,.7)"/><rect x="14" y="565" width="372" height="1.2" fill="rgba(110,70,30,.35)"/>';
+    s += '<rect x="0" y="566" width="400" height="34" fill="url(#dStep)" opacity=".92"/><rect x="0" y="566" width="400" height="1.5" fill="rgba(255,255,255,.6)"/>';
+    s += diya2(64, 542) + diya2(336, 542);
     return s + "</svg>";
   };
-  const rangoli = () => {
-    let s = '<svg viewBox="-100 -100 200 200" aria-hidden="true" fill="none" stroke="#fff7e6" stroke-width="1.3" stroke-linecap="round">';
-    s += '<circle r="92" stroke-dasharray="1 6"/><circle r="84"/><circle r="38"/><circle r="14"/>';
-    for (let i = 0; i < 16; i++) s += `<path d="M0 -40C14 -56 14 -70 0 -82C-14 -70 -14 -56 0 -40Z" transform="rotate(${i * 22.5})"/>`;
-    for (let i = 0; i < 8; i++) s += `<path d="M0 -16C7 -24 7 -30 0 -36C-7 -30 -7 -24 0 -16Z" transform="rotate(${i * 45 + 22.5})"/>`;
-    for (let i = 0; i < 32; i++) s += `<circle r="1.4" cy="-88" fill="#fff7e6" stroke="none" transform="rotate(${i * 11.25})"/>`;
-    return s + '<circle r="4" fill="#fff7e6" stroke="none"/></svg>';
+
+  // one door leaf (the left one; the right one is mirrored in CSS), in the 100x365 half of the doorway
+  const doorLeaf = () => {
+    let s = '<svg viewBox="0 0 100 365" preserveAspectRatio="none" aria-hidden="true">';
+    s += '<rect width="100" height="365" fill="#6e1529" filter="url(#dGrain)"/><rect width="100" height="365" fill="url(#dHinge)"/>';
+    s += '<rect x="3" y="3" width="94" height="359" fill="none" stroke="url(#dBrass)" stroke-width="1.3"/>';
+    // the arched top panel: a gold lotus fan rising from the top rail
+    s += '<rect x="9" y="6" width="80" height="88" fill="rgba(40,4,12,.35)"/>';
+    let fan = "";
+    for (let i = 0; i < 9; i++) fan += `<g transform="rotate(${-80 + i * 20})">${petal(52, 8)}</g>`;
+    for (let i = 0; i < 7; i++) fan += `<g transform="rotate(${-72 + i * 24})">${petal(30, 6)}</g>`;
+    fan += '<path d="M-16 0A16 16 0 0 1 16 0Z"/>';
+    s += `<g transform="translate(92 92)">${goldE(fan)}</g>`;
+    s += '<rect x="7" y="96" width="86" height="3" fill="url(#dBrass)"/>';
+    // grid of small carved panels, two across, five down
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 2; c++) {
+      const x = 10 + c * 40, y = 106 + r * 48;
+      s += `<rect x="${x}" y="${y}" width="36" height="40" fill="#4a0b19"/><rect x="${x}" y="${y}" width="36" height="40" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/>`;
+      s += `<rect x="${x + 3}" y="${y + 3}" width="30" height="34" fill="none" stroke="#c9923a" stroke-width=".8"/>`;
+      s += `<g transform="translate(${x + 18} ${y + 20}) scale(.82)">${goldE(rosette(8, 3, 9))}</g>`;
+    }
+    // the conical brass bosses (kumizh) at every crossing, and along the outer stile
+    for (let r = 0; r <= 5; r++) { const y = 102 + r * 48; [7, 48].forEach((x) => (s += stud(x, y, 3.4))); }
+    for (let y = 16; y < 96; y += 20) s += stud(6, y, 2.2);
+    // brass meeting strip with small studs, and the ring knocker
+    s += '<rect x="90" y="0" width="10" height="365" fill="url(#dBrassV)"/><rect x="89" y="0" width="1.2" height="365" fill="rgba(0,0,0,.55)"/>';
+    for (let y = 12; y < 362; y += 22) s += stud(95, y, 1.7);
+    s += `<g transform="translate(80 250)"><circle r="9" fill="rgba(0,0,0,.45)" transform="translate(.8 1.2)"/><g fill="url(#dBrass)">${rosette(8, 3, 6.5)}</g><circle r="3" fill="url(#dStud)"/>
+      <circle cx="1" cy="16.5" r="10" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="3.2"/><circle cy="15" r="10" fill="none" stroke="url(#dBrass)" stroke-width="3"/></g>`;
+    return s + "</svg>";
   };
-  return { doorFrame, doorLeaf, doorOver, rangoli, defs, toran, scene, leaves, mandala, star, heart, divider, pin };
+
+  // mango-leaf thoranam with marigolds across the doorway, and marigold strings down both sides
+  const doorOver = () => {
+    rs = 11;
+    let s = '<svg viewBox="0 0 400 600" aria-hidden="true">';
+    s += `<path class="lintel-shadow" d="M100 540V250L${archPts().map((p) => p.map(f).join(" ")).join("L")}V540Z" fill="url(#dShadeV)" opacity=".0"/>`;
+    const marigoldString = (pts, size) => {
+      let sh = `<path d="M${pts.map((p) => p.map(f).join(" ")).join("L")}" transform="translate(2 3)" stroke="rgba(60,20,0,.35)" stroke-width="${size}" stroke-linecap="round" fill="none" filter="url(#dBlur)"/>`, fl = "";
+      pts.forEach((p, i) => {
+        const z = size * (0.9 + rnd() * 0.25);
+        fl += `<use href="#${i % 3 === 1 ? "mgB" : "mgA"}" x="${f(p[0] - z / 2)}" y="${f(p[1] - z / 2)}" width="${f(z)}" height="${f(z)}" transform="rotate(${f(rnd() * 360)} ${f(p[0])} ${f(p[1])})"/>`;
+      });
+      return sh + fl;
+    };
+    // side strings
+    const L = sampleQ(99, 252, 94, 340, 101, 430, 8.5), R = sampleQ(301, 252, 306, 340, 299, 430, 8.5);
+    s += marigoldString(L, 13) + marigoldString(R, 13);
+    [L[L.length - 1], R[R.length - 1]].forEach(([x, y]) => {
+      s += `<g transform="translate(${f(x)} ${f(y + 6)})"><path d="M0 0C5 8 5 18 0 26C-5 18 -5 8 0 0Z" fill="url(#lgD)"/><path d="M0 2V24" stroke="#1f5a0c" stroke-width=".7"/></g>`;
+    });
+    // thoranam string across, with mango leaves hanging and marigolds between them
+    const T = sampleQ(96, 250, 200, 262, 304, 250, 10.5);
+    s += `<path d="M${T.map((p) => p.map(f).join(" ")).join("L")}" stroke="#6b4a1e" stroke-width="1.2" fill="none"/>`;
+    let leaves = "", balls = "";
+    T.forEach(([x, y], i) => {
+      if (i % 2 === 0) {
+        const len = 26 + rnd() * 8, rot = (rnd() - 0.5) * 16;
+        leaves += `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(rot)})"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="url(#${rnd() > .5 ? "lgD" : "lgL"})" stroke="#1f5a0c" stroke-width=".5"/><path d="M0 1V${f(len - 2)}" stroke="rgba(20,60,8,.7)" stroke-width=".6"/></g>`;
+        leaves += `<g transform="translate(${f(x + 2)} ${f(y + 3)}) rotate(${f(rot)})" opacity=".25"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="#2a1000" filter="url(#dBlur)"/></g>`;
+      } else {
+        const z = 12 + rnd() * 2;
+        balls += `<use href="#${i % 4 === 1 ? "mgB" : "mgA"}" x="${f(x - z / 2)}" y="${f(y - z / 2)}" width="${f(z)}" height="${f(z)}"/>`;
+      }
+    });
+    s += leaves + balls;
+    return s + "</svg>";
+  };
+
+  const rangoli = () => {
+    let s = '<svg viewBox="-100 -100 200 200" aria-hidden="true" fill="none" stroke-linecap="round">';
+    s += '<circle r="92" stroke="#c62b4f" stroke-width="1.3" stroke-dasharray="1 6"/><circle r="84" stroke="#b5741b" stroke-width="1.2"/><circle r="38" stroke="#c62b4f" stroke-width="1.2"/><circle r="14" stroke="#b5741b" stroke-width="1.2"/>';
+    for (let i = 0; i < 16; i++) s += `<path d="M0 -40C14 -56 14 -70 0 -82C-14 -70 -14 -56 0 -40Z" transform="rotate(${i * 22.5})" stroke="#c62b4f" stroke-width="1.2"/>`;
+    for (let i = 0; i < 8; i++) s += `<path d="M0 -16C7 -24 7 -30 0 -36C-7 -30 -7 -24 0 -16Z" transform="rotate(${i * 45 + 22.5})" stroke="#e8a93c" stroke-width="1.2"/>`;
+    for (let i = 0; i < 32; i++) s += `<circle r="1.5" cy="-88" fill="#e8a93c" transform="rotate(${i * 11.25})"/>`;
+    return s + '<circle r="4" fill="#c62b4f"/></svg>';
+  };
+  return { doorFrame, doorLeaf, doorOver, rangoli, doorClip, defs, toran, scene, leaves, mandala, star, heart, divider, pin };
 })();

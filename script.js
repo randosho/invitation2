@@ -114,6 +114,7 @@ new IntersectionObserver((es, o) => es.some((e) => e.isIntersecting) && (setTime
 
 /* cover: the first tap opens the temple doors and starts the music (the tap is what lets the browser play sound) */
 const cover = $("cover");
+$("cvWay").style.clipPath = ART.doorClip();
 for (let i = 0; i < 16; i++) {
   const d = document.createElement("i"), dur = 9 + Math.random() * 9;
   d.style.cssText = `left:${Math.random() * 100}%;--dx:${(Math.random() - 0.5) * 80}px;animation-duration:${dur}s;animation-delay:-${Math.random() * dur}s;opacity:0;transform:scale(${0.6 + Math.random() * 0.8})`;
@@ -124,7 +125,7 @@ function openCover() {
   wanted = true;
   tryPlay().catch(() => {});
   const scene = $("cvScene"), sr = scene.getBoundingClientRect(), wr = $("cvWay").getBoundingClientRect();
-  scene.style.transformOrigin = `${wr.left + wr.width / 2 - sr.left}px ${wr.top + wr.height * 0.55 - sr.top}px`;
+  scene.style.transformOrigin = `${wr.left + wr.width / 2 - sr.left}px ${wr.top + wr.height * 0.6 - sr.top}px`;
   cover.classList.add("open");
   setTimeout(() => cover.classList.add("through"), 1250);
   setTimeout(() => { document.body.classList.remove("locked"); window.scrollTo(0, 0); }, 1500);
