@@ -253,12 +253,13 @@ body.locked{overflow:hidden}
 @keyframes rise{0%{transform:translate3d(0,0,0);opacity:0}15%{opacity:.8}85%{opacity:.5}100%{transform:translate3d(var(--dx),-100vh,0);opacity:0}}
 @media(prefers-reduced-motion:reduce){#cover *{animation:none!important}.cv-leaf,#cover.through .cv-scene{transition-duration:.01s!important}}
 
-/* the garland stirs as if in a light breeze: each part sways from where it hangs, on its own timing */
-.cv-over .g-w,.cv-over .g-pend,.cv-over .g-side{transform-box:view-box}
-.cv-over .g-w{transform-origin:200px 196px;animation:g-sway 6s ease-in-out infinite alternate}
-.cv-over .g-pend{transform-origin:200px 160px;animation:g-swing 3.9s ease-in-out infinite alternate}
-.cv-over .g-l{transform-origin:76px 230px;animation:g-side 5.2s ease-in-out infinite alternate}
-.cv-over .g-r{transform-origin:324px 230px;animation:g-side 5.2s ease-in-out -2.4s infinite alternate-reverse}
-@keyframes g-sway{0%{transform:skewX(-1.6deg) scaleY(.985)}100%{transform:skewX(1.6deg) scaleY(1.02)}}
-@keyframes g-swing{0%{transform:rotate(4.5deg)}100%{transform:rotate(-4.5deg)}}
-@keyframes g-side{0%{transform:rotate(1.3deg)}100%{transform:rotate(-1.3deg)}}
+/* the garland stirs in one light breeze: every part swings the same way at the same moment, each from where it hangs.
+   For a part hanging below its pivot, rotate(+a) and skewX(-a) both move its lower end to the left. */
+.cv-over .g-w,.cv-over .g-pend,.cv-over .g-side{transform-box:view-box;animation-duration:5s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}
+.cv-over .g-w{transform-origin:200px 196px;animation-name:g-sway}
+.cv-over .g-pend{transform-origin:200px 160px;animation-name:g-swing}
+.cv-over .g-l{transform-origin:76px 230px;animation-name:g-side}
+.cv-over .g-r{transform-origin:324px 230px;animation-name:g-side}
+@keyframes g-sway{0%{transform:skewX(-1.4deg)}100%{transform:skewX(1.4deg)}}
+@keyframes g-swing{0%{transform:rotate(3deg)}100%{transform:rotate(-3deg)}}
+@keyframes g-side{0%{transform:rotate(1deg)}100%{transform:rotate(-1deg)}}

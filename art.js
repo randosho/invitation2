@@ -277,7 +277,7 @@ const ART = (() => {
       return sh + fl;
     };
     // side strings
-    const L = sampleQ(76, 230, 82, 330, 96, 426, 8.5), R = sampleQ(324, 230, 318, 330, 304, 426, 8.5);
+    const L = sampleQ(76, 230, 76, 328, 76, 426, 8.5), R = sampleQ(324, 230, 324, 328, 324, 426, 8.5);
     const tip = ([x, y]) => `<g transform="translate(${f(x)} ${f(y + 6)})"><path d="M0 0C5 8 5 18 0 26C-5 18 -5 8 0 0Z" fill="url(#lgD)"/><path d="M0 2V24" stroke="#1f5a0c" stroke-width=".7"/></g>`;
     // each part sits in its own group so it can sway from its own hanging point (see .g-* in styles.css)
     s += `<g class="g-side g-l">${marigoldString(L, 13)}${tip(L[L.length - 1])}</g><g class="g-side g-r">${marigoldString(R, 13)}${tip(R[R.length - 1])}</g>`;
