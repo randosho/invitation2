@@ -225,35 +225,65 @@ const ART = (() => {
     return s + "</svg>";
   };
 
-  // one door leaf (the left one; the right one is mirrored in CSS), in the 100x365 half of the doorway
+  // carved-in-teak reliefs for the door panels (face a little lighter than the panel field)
+  const teak = (c) => emboss(c, "#71401d", "rgba(14,5,1,.8)", "rgba(255,206,150,.3)");
+  const gopuramRelief = () => '<rect x="-27" y="14" width="54" height="9"/><path d="M-24 14L-21 4H21L24 14Z"/><path d="M-19 4L-16 -5H16L19 4Z"/><path d="M-14 -5L-11 -13H11L14 -5Z"/>' +
+    '<path d="M-10 -13C-10 -20 10 -20 10 -13Z"/><rect x="-2.2" y="-26" width="4.4" height="7" rx="2"/><circle cx="-7" cy="-18" r="1.6"/><circle cx="7" cy="-18" r="1.6"/>';
+  const gopuramShade = '<path d="M-4 23V17A4 4 0 0 1 4 17V23Z" fill="rgba(14,5,1,.75)"/>' + [-16, -8, 8, 16].map((x) => `<rect x="${x - 1.6}" y="7" width="3.2" height="5" fill="rgba(14,5,1,.6)"/>`).join("") + [-10, 0, 10].map((x) => `<rect x="${x - 1.4}" y="-2" width="2.8" height="4.5" fill="rgba(14,5,1,.6)"/>`).join("") + '<rect x="-1.3" y="-10" width="2.6" height="4" fill="rgba(14,5,1,.6)"/>';
+  const lotusRelief = () => '<path d="M0 -22C7 -11 7 2 0 12C-7 2 -7 -11 0 -22Z"/><path d="M0 12C-9 7 -16 -3 -17 -13C-8 -10 -2 -2 0 12Z"/><path d="M0 12C9 7 16 -3 17 -13C8 -10 2 -2 0 12Z"/>' +
+    '<path d="M0 13C-11 13 -20 6 -23 -2C-13 -4 -4 3 0 13Z"/><path d="M0 13C11 13 20 6 23 -2C13 -4 4 3 0 13Z"/><path d="M-12 15H12L8 20H-8Z"/>' +
+    '<path d="M-8 20C-14 21 -22 19 -27 13C-21 13 -14 15 -8 20Z"/><path d="M8 20C14 21 22 19 27 13C21 13 14 15 8 20Z"/><path d="M-1 20H1V25H-1Z"/>';
+  const lotusShade = '<path d="M0 -18C3 -10 3 0 0 8" fill="none" stroke="rgba(255,210,160,.35)" stroke-width=".8"/>';
+  const elephantRelief = () => '<ellipse cx="-4" cy="1" rx="15" ry="10"/><circle cx="11" cy="-4" r="7.5"/><path d="M16 -1C20 3 20 10 16 14C14.6 15.4 13 14 14 12.6C16.4 9.4 16 4 13 1Z"/>' +
+    '<rect x="-16" y="5" width="5" height="12" rx="1.5"/><rect x="-9" y="6" width="5" height="11" rx="1.5"/><rect x="2" y="6" width="5" height="11" rx="1.5"/><rect x="8" y="4" width="5" height="13" rx="1.5"/>' +
+    '<path d="M-19 0C-22 3 -22 7 -21 10L-19.6 10C-20.4 7 -20 4 -18 2Z"/><path d="M-12 -9H2V-1L-1 2L-4 -1L-7 2L-10 -1L-13 2Z"/>';
+  const elephantShade = '<path d="M7 -8C3 -7 3 2 7 3" fill="none" stroke="rgba(14,5,1,.7)" stroke-width="1"/><circle cx="13" cy="-6" r="1" fill="rgba(14,5,1,.85)"/><path d="M16 2L21 3" stroke="#efe0c0" stroke-width="1.4" stroke-linecap="round"/><path d="M-12 -9H2" stroke="rgba(201,146,58,.8)" stroke-width=".8"/>';
+  const cartouche = (w, h) => {
+    const r = 4, o = (W, H) => `M${-W / 2 + r} ${-H / 2}H${W / 2 - r}A${r} ${r} 0 0 0 ${W / 2} ${-H / 2 + r}V${H / 2 - r}A${r} ${r} 0 0 0 ${W / 2 - r} ${H / 2}H${-W / 2 + r}A${r} ${r} 0 0 0 ${-W / 2} ${H / 2 - r}V${-H / 2 + r}A${r} ${r} 0 0 0 ${-W / 2 + r} ${-H / 2}Z`;
+    let s = `<path fill-rule="evenodd" d="${o(w, h)}${o(w - 5, h - 5)}"/>`;
+    [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => (s += `<g transform="translate(${f(sx * (w / 2 - 5))} ${f(sy * (h / 2 - 5))}) rotate(${f(Math.atan2(-sy, -sx) * 180 / Math.PI + 90)})">${petal(7, 2.4)}</g>`));
+    return s;
+  };
+  const beadBorder = (x, y, w, h) => {
+    let b = "";
+    for (let t = x + 4; t <= x + w - 4; t += 4) b += `<circle cx="${t}" cy="${y + 3.2}" r="1.1"/><circle cx="${t}" cy="${y + h - 3.2}" r="1.1"/>`;
+    for (let t = y + 7; t <= y + h - 7; t += 4) b += `<circle cx="${x + 3.2}" cy="${t}" r="1.1"/><circle cx="${x + w - 3.2}" cy="${t}" r="1.1"/>`;
+    return teak(b);
+  };
+  const recess = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#45240e"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="rgba(0,0,0,.6)" stroke-width="1.3"/>
+    <path d="M${x} ${y + h}V${y}H${x + w}" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="2.2"/><path d="M${x + w} ${y}V${y + h}H${x}" fill="none" stroke="rgba(255,205,150,.14)" stroke-width="1.4"/>` + beadBorder(x, y, w, h);
+
+  // one door leaf (the left one; the right one is mirrored in CSS), in the 100x365 half of the doorway.
+  // Carved teak in the manner of South Indian temple doors: gopuram, lotus and elephant reliefs, filigree panels with brass bosses.
   const doorLeaf = () => {
     let s = '<svg viewBox="0 0 100 365" preserveAspectRatio="none" aria-hidden="true">';
     s += '<rect width="100" height="365" fill="#5a3115" filter="url(#dGrain)"/><rect width="100" height="365" fill="url(#dHinge)"/>';
-    s += '<rect x="3" y="3" width="94" height="359" fill="none" stroke="url(#dBrass)" stroke-width="1.3"/>';
-    // the arched top panel: a gold lotus fan rising from the top rail
+    s += '<rect x="3" y="3" width="94" height="359" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="1.6"/>';
+    // arched top: a carved teak lotus fan
     s += '<rect x="9" y="6" width="80" height="88" fill="rgba(30,12,4,.35)"/>';
     let fan = "";
     for (let i = 0; i < 9; i++) fan += `<g transform="rotate(${-80 + i * 20})">${petal(52, 8)}</g>`;
     for (let i = 0; i < 7; i++) fan += `<g transform="rotate(${-72 + i * 24})">${petal(30, 6)}</g>`;
     fan += '<path d="M-16 0A16 16 0 0 1 16 0Z"/>';
-    s += `<g transform="translate(92 92)">${goldE(fan)}</g>`;
-    s += '<rect x="7" y="96" width="86" height="3" fill="url(#dBrass)"/>';
-    // grid of small carved panels, two across, five down
-    for (let r = 0; r < 5; r++) for (let c = 0; c < 2; c++) {
-      const x = 10 + c * 40, y = 106 + r * 48;
-      s += `<rect x="${x}" y="${y}" width="36" height="40" fill="#3f210e"/><rect x="${x}" y="${y}" width="36" height="40" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/>`;
-      s += `<rect x="${x + 3}" y="${y + 3}" width="30" height="34" fill="none" stroke="#c9923a" stroke-width=".8"/>`;
-      s += `<g transform="translate(${x + 18} ${y + 20}) scale(.82)">${goldE(rosette(8, 3, 9))}</g>`;
-    }
-    // the conical brass bosses (kumizh) at every crossing, and along the outer stile
-    for (let r = 0; r <= 5; r++) { const y = 102 + r * 48; [7, 48].forEach((x) => (s += stud(x, y, 3.4))); }
-    for (let y = 16; y < 96; y += 20) s += stud(6, y, 2.2);
-    // brass meeting strip with small studs, and the ring knocker
+    s += `<g transform="translate(92 92)">${teak(fan)}</g>`;
+    s += '<rect x="7" y="96" width="83" height="2.5" fill="url(#dBrass)"/>';
+    // panels, top to bottom
+    s += recess(10, 104, 76, 58) + `<g transform="translate(48 134) scale(1.05)">${teak(gopuramRelief())}${gopuramShade}</g>`;
+    [[10, 170], [50, 170]].forEach(([x, y]) => (s += recess(x, y, 36, 30) + `<g transform="translate(${x + 18} ${y + 15})">${teak(cartouche(28, 22))}</g>` + stud(x + 18, y + 15, 3.3)));
+    s += recess(10, 208, 76, 74) + `<g transform="translate(48 243) scale(1.25)">${teak(lotusRelief())}${lotusShade}</g>`;
+    s += recess(10, 290, 76, 62) + `<g transform="translate(46 320) scale(1.55)">${teak(elephantRelief())}${elephantShade}</g>`;
+    // brass bosses where the rails meet, and a close row of studs down the hinge stile
+    [100, 166, 204, 286, 356].forEach((y) => [6, 48, 88].forEach((x) => (s += stud(x, y, 3))));
+    for (let y = 112; y < 352; y += 13) s += stud(5.5, y, 1.6);
+    // engraved brass meeting strip
     s += '<rect x="90" y="0" width="10" height="365" fill="url(#dBrassV)"/><rect x="89" y="0" width="1.2" height="365" fill="rgba(0,0,0,.55)"/>';
-    for (let y = 12; y < 362; y += 22) s += stud(95, y, 1.7);
-    // door pull: a smooth polished brass shield plate with a slim drop ring, plain so it stands apart from the carved rosettes
+    let eng = "";
+    for (let y = 8; y < 360; y += 10) eng += `<path d="M95 ${y - 3.5}L98 ${y}L95 ${y + 3.5}L92 ${y}Z"/>`;
+    s += `<g fill="none" stroke="rgba(70,40,5,.6)" stroke-width=".6">${eng}</g>`;
+    for (let y = 13; y < 360; y += 20) s += stud(95, y, 1.4);
+    // door pull: smooth brass shield plate with a slim drop ring
     const plate = "M0 -12C5 -8 6 -3 5 2C4 7 2 10 0 13C-2 10 -4 7 -5 2C-6 -3 -5 -8 0 -12Z";
-    s += `<g transform="translate(83 236)">
+    s += `<g transform="translate(82 214)">
       <path d="${plate}" fill="rgba(0,0,0,.55)" transform="translate(1 1.4)" filter="url(#dBlur)"/>
       <path d="${plate}" fill="url(#dBrassV)" stroke="#4e3008" stroke-width=".7"/>
       <path d="M-1.6 -8C-3 -3 -3 3 -1.2 8" stroke="rgba(255,248,220,.75)" stroke-width="1" fill="none" stroke-linecap="round"/>
