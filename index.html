@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2eadc">
+<title>Laxmi & Deepak's Wedding Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<button id="sound" class="sound off" aria-label="Toggle music">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="mute" d="M16 9l5 6M21 9l-5 6"/></svg>
+</button>
+
+<main class="page">
+  <section class="hero">
+    <img class="hero-bg" src="assets/bg-texture.jpg" alt="">
+    <div class="petals"></div>
+    <div class="toran"><img class="sway" src="assets/toran-top.png" alt=""></div>
+    <img class="leaf l" src="assets/banana-leaves.png" alt="">
+    <img class="leaf r" src="assets/banana-leaves.png" alt="">
+    <div class="hero-in">
+      <p class="eyebrow"><span class="te">शुभ विवाह</span> · <span>Shubh Vivah</span></p>
+      <h1 class="names"><span class="n script sindoor" id="bride">Laxmi</span><span class="weds"><i></i><span class="script gold">weds</span><i></i></span><span class="n script sindoor" id="groom">Deepak</span></h1>
+      <p class="date" id="dateText"></p>
+      <img class="couple-img float" src="assets/couple.png" alt="Laxmi and Deepak">
+    </div>
+  </section>
+
+  <section class="sec invite" id="invitation">
+    <div class="mandala-bg" data-art="mandala"></div>
+    <span class="star" data-art="star"></span>
+    <h2 class="script title">The Invitation</h2>
+    <div class="env" id="env" role="button" tabindex="0" aria-expanded="false" aria-label="Open the invitation">
+      <div class="env-card">
+        <span class="star sm" data-art="star"></span>
+        <p class="bless">With the blessings of our elders and the grace of the Almighty, we joyfully invite you and your family to shower your love and blessings on our wedding celebrations.</p>
+      </div>
+      <div class="env-body"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal"><span class="script" id="seal">L·D</span></div>
+    </div>
+    <p class="hint" id="hint">✦ Tap the seal to open ✦</p>
+  </section>
+
+  <section class="sec couple">
+    <div class="pcard reveal"><p class="cap">The Bride</p><h3 class="script" id="bride2">Laxmi</h3></div>
+    <span class="heart" data-art="heart"></span>
+    <div class="pcard reveal"><p class="cap">The Groom</p><h3 class="script" id="groom2">Deepak</h3></div>
+  </section>
+
+  <section class="sec count">
+    <h2 class="script title reveal">Counting the Moments</h2>
+    <p class="cap reveal">Until the Lagna</p>
+    <div class="tiles reveal">
+      <div class="tile"><b id="cd-d">00</b><small>Days</small></div>
+      <div class="tile"><b id="cd-h">00</b><small>Hours</small></div>
+      <div class="tile"><b id="cd-m">00</b><small>Mins</small></div>
+      <div class="tile"><b id="cd-s">00</b><small>Secs</small></div>
+    </div>
+  </section>
+
+  <section class="sec moments">
+    <div class="petals"></div>
+    <span class="star" data-art="star"></span>
+    <h2 class="script title reveal">The Auspicious Moment</h2>
+    <ul class="events" id="events"></ul>
+    <div class="lagna reveal">
+      <p class="cap">The Wedding</p>
+      <h3 class="script">Lagna</h3>
+      <div class="clock" id="clock"></div>
+      <p class="ldate" id="lDate"></p>
+      <a class="btn" id="calBtn" target="_blank" rel="noopener">Add to Google Calendar</a>
+    </div>
+  </section>
+
+  <section class="sec venue">
+    <div class="divider" data-art="divider"></div>
+    <h2 class="script title reveal">The Venue</h2>
+    <div class="vcard reveal">
+      <span class="pin" data-art="pin"></span>
+      <h3>Join us in celebration</h3>
+      <p>Tap below for directions to the venue.</p>
+      <a class="btn" id="mapBtn" target="_blank" rel="noopener">Get Directions</a>
+    </div>
+  </section>
+
+  <section class="sec foot">
+    <div class="mandala-bg" data-art="mandala"></div>
+    <h2 class="script title">With love &amp; blessings</h2>
+    <p class="script sign" id="sign"></p>
+    <p class="cap tag" id="tag"></p>
+    <img class="foot-overlay" src="assets/footer-overlay.png" alt="">
+  </section>
+</main>
+<script src="art.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
