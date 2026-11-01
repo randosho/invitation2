@@ -22,8 +22,6 @@ const E = CONFIG.eventDate;
 ["groom", "groom2"].forEach((i) => ($(i).textContent = CONFIG.groom));
 $("dateText").textContent = `${pad(E.getDate())} · ${pad(E.getMonth() + 1)} · ${E.getFullYear()}`;
 $("seal").textContent = `${CONFIG.groom[0]}·${CONFIG.bride[0]}`;
-$("coverNames").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
-$("coverDate").textContent = $("dateText").textContent;
 $("sign").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
 $("mapBtn").href = CONFIG.mapUrl;
 $("events").innerHTML = CONFIG.events.map(([d, n, t]) =>
