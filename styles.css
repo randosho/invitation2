@@ -255,10 +255,10 @@ body.locked{overflow:hidden}
 
 /* the garland stirs as if in a light breeze: each part sways from where it hangs, on its own timing */
 .cv-over .g-w,.cv-over .g-pend,.cv-over .g-side{transform-box:view-box}
-.cv-over .g-w{transform-origin:200px 226px;animation:g-sway 6s ease-in-out infinite alternate}
-.cv-over .g-pend{transform-origin:200px 198px;animation:g-swing 3.9s ease-in-out infinite alternate}
-.cv-over .g-l{transform-origin:99px 252px;animation:g-side 5.2s ease-in-out infinite alternate}
-.cv-over .g-r{transform-origin:301px 252px;animation:g-side 5.2s ease-in-out -2.4s infinite alternate-reverse}
+.cv-over .g-w{transform-origin:200px 196px;animation:g-sway 6s ease-in-out infinite alternate}
+.cv-over .g-pend{transform-origin:200px 160px;animation:g-swing 3.9s ease-in-out infinite alternate}
+.cv-over .g-l{transform-origin:76px 230px;animation:g-side 5.2s ease-in-out infinite alternate}
+.cv-over .g-r{transform-origin:324px 230px;animation:g-side 5.2s ease-in-out -2.4s infinite alternate-reverse}
 @keyframes g-sway{0%{transform:skewX(-1.6deg) scaleY(.985)}100%{transform:skewX(1.6deg) scaleY(1.02)}}
 @keyframes g-swing{0%{transform:rotate(4.5deg)}100%{transform:rotate(-4.5deg)}}
 @keyframes g-side{0%{transform:rotate(1.3deg)}100%{transform:rotate(-1.3deg)}}

@@ -270,20 +270,21 @@ const ART = (() => {
       return sh + fl;
     };
     // side strings
-    const L = sampleQ(99, 252, 94, 340, 101, 430, 8.5), R = sampleQ(301, 252, 306, 340, 299, 430, 8.5);
+    const L = sampleQ(76, 230, 82, 330, 96, 426, 8.5), R = sampleQ(324, 230, 318, 330, 304, 426, 8.5);
     const tip = ([x, y]) => `<g transform="translate(${f(x)} ${f(y + 6)})"><path d="M0 0C5 8 5 18 0 26C-5 18 -5 8 0 0Z" fill="url(#lgD)"/><path d="M0 2V24" stroke="#1f5a0c" stroke-width=".7"/></g>`;
     // each part sits in its own group so it can sway from its own hanging point (see .g-* in styles.css)
     s += `<g class="g-side g-l">${marigoldString(L, 13)}${tip(L[L.length - 1])}</g><g class="g-side g-r">${marigoldString(R, 13)}${tip(R[R.length - 1])}</g>`;
     // thoranam in a W: two swags from the sides rise to a raised centre tie, with a long pendant dropping from the centre
-    const sw1 = sampleQ(99, 252, 148, 322, 200, 196, 8.2), sw2 = sampleQ(200, 196, 252, 322, 301, 252, 8.2);
-    const pend = sampleQ(200, 200, 202, 245, 200, 292, 8.2);
+    const sw1 = sampleQ(76, 230, 134, 326, 200, 158, 8.2), sw2 = sampleQ(200, 158, 266, 326, 324, 230, 8.2);
+    const pend = sampleQ(200, 162, 202, 216, 200, 270, 8.2);
     let leaves = "", balls = "";
     const leafAt = (x, y, len, rot) => `<g transform="translate(${f(x + 2)} ${f(y + 3)}) rotate(${f(rot)})" opacity=".25"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="#2a1000" filter="url(#dBlur)"/></g>
       <g transform="translate(${f(x)} ${f(y)}) rotate(${f(rot)})"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="url(#${rnd() > .5 ? "lgD" : "lgL"})" stroke="#1f5a0c" stroke-width=".5"/><path d="M0 1V${f(len - 2)}" stroke="rgba(20,60,8,.7)" stroke-width=".6"/></g>`;
     [sw1, sw2].forEach((sw) => sw.forEach(([x, y], i) => { if (i % 2 === 0 && i > 0 && i < sw.length - 1) leaves += leafAt(x, y + 3, 20 + rnd() * 8, (rnd() - 0.5) * 18); }));
     balls += marigoldString(sw1, 13) + marigoldString(sw2, 13);
-    const pendant = leafAt(200, 294, 32, 0) + leafAt(197, 292, 25, 24) + leafAt(203, 292, 25, -24) + marigoldString(pend, 12) + `<use href="#mgB" x="191" y="285" width="18" height="18"/>`;
-    const knots = [[200, 196, 20], [99, 252, 17], [301, 252, 17]].map(([x, y, z]) => `<use href="#mgA" x="${x - z / 2}" y="${y - z / 2}" width="${z}" height="${z}"/>`).join("");
+    const pendant = leafAt(200, 272, 32, 0) + leafAt(197, 270, 25, 24) + leafAt(203, 270, 25, -24) + marigoldString(pend, 12) + `<use href="#mgB" x="191" y="263" width="18" height="18"/>`;
+    // brass hooks set into the wall, with a marigold knot tied over each
+    const knots = [[200, 158, 20], [76, 230, 17], [324, 230, 17]].map(([x, y, z]) => `<circle cx="${x + .8}" cy="${y - 5}" r="3.4" fill="rgba(60,30,5,.45)"/><circle cx="${x}" cy="${y - 6}" r="3.2" fill="url(#dStud)"/><use href="#mgA" x="${x - z / 2}" y="${y - z / 2}" width="${z}" height="${z}"/>`).join("");
     s += `<g class="g-w">${leaves}${balls}</g><g class="g-pend">${pendant}</g>${knots}`;
     return s + "</svg>";
   };
