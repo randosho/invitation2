@@ -21,7 +21,8 @@ const E = CONFIG.eventDate;
 ["bride", "bride2"].forEach((i) => ($(i).textContent = CONFIG.bride));
 ["groom", "groom2"].forEach((i) => ($(i).textContent = CONFIG.groom));
 $("dateText").textContent = `${pad(E.getDate())} · ${pad(E.getMonth() + 1)} · ${E.getFullYear()}`;
-$("seal").textContent = `${CONFIG.groom[0]}·${CONFIG.bride[0]}`;
+$("seal").textContent = $("coverSeal").textContent = `${CONFIG.groom[0]}·${CONFIG.bride[0]}`;
+$("coverNames").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
 $("sign").textContent = `${CONFIG.groom} & ${CONFIG.bride}`;
 $("mapBtn").href = CONFIG.mapUrl;
 $("events").innerHTML = CONFIG.events.map(([d, n, t]) =>
@@ -109,3 +110,18 @@ new IntersectionObserver((es, o) => es.some((e) => e.isIntersecting) && (setTime
   $("calBtn").href = "https://calendar.google.com/calendar/render?" + new URLSearchParams({ action: "TEMPLATE", text: `${CONFIG.groom} & ${CONFIG.bride}: Lagna`, dates: `${f(E)}/${f(end)}`, details: "Wedding of " + CONFIG.groom + " & " + CONFIG.bride, location: CONFIG.mapUrl });
   $("tag").textContent = `#${CONFIG.groom}Weds${CONFIG.bride}`;
 })();
+
+/* cover: the first tap opens the site and starts the music (the tap is what lets the browser play sound) */
+const cover = $("cover");
+function openCover() {
+  if (cover.classList.contains("gone")) return;
+  wanted = true;
+  tryPlay().catch(() => {});
+  cover.classList.add("gone");
+  document.body.classList.remove("locked");
+  window.scrollTo(0, 0);
+  setTimeout(() => cover.remove(), 1000);
+}
+cover.addEventListener("click", openCover);
+cover.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openCover()));
+cover.focus({ preventScroll: true });
