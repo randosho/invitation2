@@ -55,17 +55,24 @@ tick(); setInterval(tick, 1000);
 const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.1 });
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-/* music: assets/music.mp3, started on the first tap (browsers need a tap before audio can play) */
+/* music: assets/music.mp3, on by default. Browsers only allow sound after a tap, so if autoplay is
+   blocked it starts on the visitor's first tap or key press. The speaker button mutes and unmutes. */
 const soundBtn = $("sound");
 const bgm = new Audio("assets/music.mp3");
-bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0.7;
-let on = false;
+bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0.35;
+let on = true;
+soundBtn.classList.remove("off");
+const GESTURES = ["pointerup", "touchend", "click", "keydown"];
+function unlock() {
+  if (!on) return;
+  bgm.play().then(() => GESTURES.forEach((g) => removeEventListener(g, unlock, true))).catch(() => {});
+}
+bgm.play().catch(() => GESTURES.forEach((g) => addEventListener(g, unlock, true)));
 function setSound(v) {
   on = v; soundBtn.classList.toggle("off", !v);
-  if (v) bgm.play().catch(() => { on = false; soundBtn.classList.add("off"); });
-  else bgm.pause();
+  if (v) bgm.play().catch(() => {}); else bgm.pause();
 }
-soundBtn.addEventListener("click", () => setSound(!on));
+soundBtn.addEventListener("click", (e) => { e.stopPropagation(); setSound(!on); });
 document.addEventListener("visibilitychange", () => { if (on) document.hidden ? bgm.pause() : bgm.play().catch(() => {}); });
 
 /* envelope: opens on tap, or on its own once scrolled into view */
@@ -73,7 +80,7 @@ const env = $("env"), invite = $("invitation");
 function openEnv(fromTap) {
   if (env.classList.contains("open")) return;
   env.classList.add("open"); invite.classList.add("open"); env.setAttribute("aria-expanded", "true");
-  if (fromTap && !on) setSound(true);
+  if (fromTap && on) bgm.play().catch(() => {});
 }
 env.addEventListener("click", () => openEnv(true));
 env.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openEnv(true)));
