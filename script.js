@@ -59,7 +59,7 @@ document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
    blocked it starts on the visitor's first tap or key press. The speaker button mutes and unmutes. */
 const soundBtn = $("sound");
 const bgm = new Audio("assets/music.mp3");
-bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0.35;
+bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0.25;
 let on = true;
 soundBtn.classList.remove("off");
 const GESTURES = ["pointerup", "touchend", "click", "keydown"];
