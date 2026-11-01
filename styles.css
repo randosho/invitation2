@@ -207,3 +207,8 @@ form .btn{width:100%;margin-top:4px}
 .foot{padding-bottom:0}
 .foot-text{min-height:0;padding:20px 0 56px}
 .foot .foot-overlay{margin-top:0;margin-bottom:-2px}
+
+/* footer: the text block is exactly as tall as the wheel, so the lamps strip starts below the wheel */
+.foot{padding-top:16px}
+.foot-text{min-height:460px;padding:0}
+.foot .foot-overlay{margin-top:-14px}
