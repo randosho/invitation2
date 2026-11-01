@@ -173,3 +173,9 @@ form .btn{width:100%;margin-top:4px}
 
 .eyebrow{gap:10px}
 .eyebrow .ganesha{height:44px;width:auto;flex:none;margin:-4px 2px}
+
+/* greeting: Ganesha centred above the two lines */
+.eyebrow{flex-direction:column;gap:2px;margin-top:4px}
+.eyebrow .ganesha{height:58px;margin:0 0 6px}
+.eyebrow .te{font-size:17px;line-height:1.5}
+.eyebrow .en{font-size:11px}
