@@ -12,21 +12,26 @@
 </head>
 <body class="locked">
 <div id="cover" role="button" tabindex="0" aria-label="Tap to open the invitation">
-  <div class="cover-mandala" data-art="mandala"></div>
-  <div class="petals"></div>
-  <div class="cover-in">
-    <p class="cover-kicker">You are cordially invited</p>
+  <div class="cover-frame">
     <img class="cover-ganesha" src="assets/ganesha-gold.png" alt="Shri Ganesh">
-    <p class="cover-names script" id="coverNames">Deepak &amp; Laxmi</p>
-    <p class="cover-date" id="coverDate"></p>
-    <div class="cover-seal">
-      <i class="ring"></i><i class="ring r2"></i>
-      <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i>
-      <span class="script" id="coverSeal">D·L</span>
+    <div class="doors">
+      <div class="leaf lf"><div class="motif" data-art="mandala"></div></div>
+      <div class="leaf rt"><div class="motif" data-art="mandala"></div></div>
     </div>
-    <p class="cover-btn"><span>Tap to open</span></p>
+    <div class="door-ui">
+        <p class="cover-kicker">You are cordially invited</p>
+        <p class="cover-names script" id="coverNames">Deepak &amp; Laxmi</p>
+        <p class="cover-date" id="coverDate"></p>
+        <div class="cover-seal">
+          <i class="ring"></i><i class="ring r2"></i>
+          <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i>
+          <span class="script" id="coverSeal">D·L</span>
+        </div>
+        <p class="cover-btn"><span>Tap to open</span></p>
+    </div>
+    <img class="cover-lamps" src="assets/footer-overlay.png" alt="">
   </div>
-  <img class="cover-lamps" src="assets/footer-overlay.png" alt="">
+  <div class="petals"></div>
 </div>
 <button id="sound" class="sound" aria-label="Toggle music">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="mute" d="M16 9l5 6M21 9l-5 6"/></svg>

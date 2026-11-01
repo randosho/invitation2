@@ -112,16 +112,16 @@ new IntersectionObserver((es, o) => es.some((e) => e.isIntersecting) && (setTime
   $("tag").textContent = `#${CONFIG.groom}Weds${CONFIG.bride}`;
 })();
 
-/* cover: the first tap opens the site and starts the music (the tap is what lets the browser play sound) */
+/* cover: the first tap swings the doors open and starts the music (the tap is what lets the browser play sound) */
 const cover = $("cover");
 function openCover() {
-  if (cover.classList.contains("gone")) return;
+  if (cover.classList.contains("open")) return;
   wanted = true;
   tryPlay().catch(() => {});
-  cover.classList.add("gone");
-  document.body.classList.remove("locked");
-  window.scrollTo(0, 0);
-  setTimeout(() => cover.remove(), 1000);
+  cover.classList.add("open");
+  setTimeout(() => { document.body.classList.remove("locked"); window.scrollTo(0, 0); }, 900);
+  setTimeout(() => cover.classList.add("gone"), 1900);
+  setTimeout(() => cover.remove(), 3100);
 }
 cover.addEventListener("click", openCover);
 cover.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openCover()));
