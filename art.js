@@ -251,8 +251,15 @@ const ART = (() => {
     // brass meeting strip with small studs, and the ring knocker
     s += '<rect x="90" y="0" width="10" height="365" fill="url(#dBrassV)"/><rect x="89" y="0" width="1.2" height="365" fill="rgba(0,0,0,.55)"/>';
     for (let y = 12; y < 362; y += 22) s += stud(95, y, 1.7);
-    s += `<g transform="translate(80 250)"><circle r="9" fill="rgba(0,0,0,.45)" transform="translate(.8 1.2)"/><g fill="url(#dBrass)">${rosette(8, 3, 6.5)}</g><circle r="3" fill="url(#dStud)"/>
-      <circle cx="1" cy="16.5" r="10" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="3.2"/><circle cy="15" r="10" fill="none" stroke="url(#dBrass)" stroke-width="3"/></g>`;
+    // door pull: a smooth polished brass shield plate with a slim drop ring, plain so it stands apart from the carved rosettes
+    const plate = "M0 -12C5 -8 6 -3 5 2C4 7 2 10 0 13C-2 10 -4 7 -5 2C-6 -3 -5 -8 0 -12Z";
+    s += `<g transform="translate(83 236)">
+      <path d="${plate}" fill="rgba(0,0,0,.55)" transform="translate(1 1.4)" filter="url(#dBlur)"/>
+      <path d="${plate}" fill="url(#dBrassV)" stroke="#4e3008" stroke-width=".7"/>
+      <path d="M-1.6 -8C-3 -3 -3 3 -1.2 8" stroke="rgba(255,248,220,.75)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <circle cy="13" r="2" fill="url(#dStud)"/>
+      <ellipse cx=".8" cy="21.6" rx="6.4" ry="7.4" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="2.2"/>
+      <ellipse cy="20.6" rx="6.4" ry="7.4" fill="none" stroke="url(#dBrass)" stroke-width="2"/></g>`;
     return s + "</svg>";
   };
 
