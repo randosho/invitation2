@@ -237,7 +237,7 @@ body.locked{overflow:hidden}
 #cover.open .cv-light{opacity:1}
 .cv-leaf{position:absolute;top:0;bottom:0;width:50%;transition:transform 1.6s cubic-bezier(.5,.05,.25,1)}
 .cv-leaf.lf{left:0;transform-origin:0 50%}.cv-leaf.rt{right:0;transform-origin:100% 50%}
-.cv-leaf.rt svg{transform:scaleX(-1)}
+.cv-leaf img,.cv-leaf canvas{display:block;width:100%;height:100%}
 #cover.open .cv-leaf.lf{transform:rotateY(104deg)}
 #cover.open .cv-leaf.rt{transform:rotateY(-104deg)}
 .cv-bottom{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;transition:opacity .5s}

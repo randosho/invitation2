@@ -148,9 +148,7 @@ const ART = (() => {
   const kalasam = (x, y) => `<path d="M${x - 7} ${y}C${x - 11} ${y - 8} ${x - 7} ${y - 15} ${x} ${y - 16}C${x + 7} ${y - 15} ${x + 11} ${y - 8} ${x + 7} ${y}Z" fill="url(#dBrass)" stroke="#6b4510" stroke-width=".6"/>
     <rect x="${x - 4}" y="${y - 19}" width="8" height="3" rx="1" fill="url(#dBrass)"/><path d="M${x - 3} ${y - 19}C${x - 3} ${y - 24} ${x - 1} ${y - 28} ${x} ${y - 31}C${x + 1} ${y - 28} ${x + 3} ${y - 24} ${x + 3} ${y - 19}Z" fill="url(#dBrass)" stroke="#6b4510" stroke-width=".5"/>`;
 
-  const doorFrame = () => {
-    const ap = archPts(), inner = ap.map((p) => p.map(f).join(" ")).join("L");
-    let s = `<svg viewBox="0 0 400 600" aria-hidden="true"><defs>
+  const DOOR_DEFS = `
       <filter id="dGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
         <feTurbulence type="fractalNoise" baseFrequency="0.012 0.24" numOctaves="3" seed="7" result="n"/>
         <feColorMatrix in="n" type="matrix" values="0 0 0 0 .09  0 0 0 0 .045  0 0 0 0 .015  1.7 0 0 0 -.66" result="g"/>
@@ -160,6 +158,21 @@ const ART = (() => {
         <feColorMatrix in="n" type="matrix" values="0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .18  0 0 0 .18 0" result="g"/>
         <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge></filter>
       <filter id="dBlur"><feGaussianBlur stdDeviation="1.8"/></filter>
+      <pattern id="dWoodPat" patternUnits="userSpaceOnUse" width="120" height="120"><rect width="120" height="120" fill="#b47c4a" filter="url(#dGrain)"/></pattern>
+      <filter id="dRelief" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="b"/>
+        <feDiffuseLighting in="b" surfaceScale="3.2" diffuseConstant="1.15" lighting-color="#ffe2b8" result="d"><feDistantLight azimuth="225" elevation="40"/></feDiffuseLighting>
+        <feSpecularLighting in="b" surfaceScale="3.2" specularConstant=".45" specularExponent="16" lighting-color="#fff2d6" result="sp"><feDistantLight azimuth="225" elevation="40"/></feSpecularLighting>
+        <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" result="lit"/>
+        <feComposite in="sp" in2="SourceAlpha" operator="in" result="spc"/>
+        <feComposite in="lit" in2="spc" operator="arithmetic" k2="1" k3=".7" result="lit2"/>
+        <feComposite in="lit2" in2="SourceAlpha" operator="in" result="face"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".035 .45" numOctaves="2" seed="5" result="tn"/>
+        <feColorMatrix in="tn" type="matrix" values="0 0 0 0 .16  0 0 0 0 .07  0 0 0 0 .02  1.3 0 0 0 -.55" result="tg"/>
+        <feComposite in="tg" in2="face" operator="atop" result="faceg"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="sb"/><feOffset in="sb" dx="1.4" dy="1.9" result="so"/>
+        <feFlood flood-color="#120500" flood-opacity=".8"/><feComposite in2="so" operator="in" result="shadow"/>
+        <feMerge><feMergeNode in="shadow"/><feMergeNode in="faceg"/></feMerge></filter>
       <linearGradient id="dBrassV" x1="0" x2="1"><stop offset="0" stop-color="#6b4510"/><stop offset=".4" stop-color="#e9c46a"/><stop offset=".7" stop-color="#b8862e"/><stop offset="1" stop-color="#5c3a0c"/></linearGradient>
       <linearGradient id="dBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6df9a"/><stop offset=".5" stop-color="#c9923a"/><stop offset="1" stop-color="#6b4510"/></linearGradient>
       <radialGradient id="dStud" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff3c8"/><stop offset=".4" stop-color="#dcaa48"/><stop offset="1" stop-color="#5c3a0c"/></radialGradient>
@@ -169,7 +182,13 @@ const ART = (() => {
       <linearGradient id="dStep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe3c9"/><stop offset="1" stop-color="#c8b28a"/></linearGradient>
       <linearGradient id="dShadeV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0810" stop-opacity=".55"/><stop offset="1" stop-color="#2a0810" stop-opacity="0"/></linearGradient>
       <radialGradient id="dWine" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#9a2447"/><stop offset="1" stop-color="#5a0f24"/></radialGradient>
-    </defs>`;
+    `;
+  // a standalone SVG document (own defs) turned into an image URL; images can be mirrored safely, filtered vectors cannot
+  const svgImage = (viewBox, body, extraDefs = "") => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" preserveAspectRatio="none"><defs>${DOOR_DEFS}${extraDefs}</defs>${body}</svg>`);
+
+  const doorFrame = () => {
+    const ap = archPts(), inner = ap.map((p) => p.map(f).join(" ")).join("L");
+    let s = `<svg viewBox="0 0 400 600" aria-hidden="true"><defs>${DOOR_DEFS}</defs>`;
     // ivory carved façade
     s += '<rect x="22" y="50" width="356" height="492" fill="url(#dIvory)" filter="url(#dStoneTex)"/><rect x="22" y="50" width="356" height="492" fill="none" stroke="rgba(120,80,30,.35)"/>';
     // cornice with dentils and a gold band, and a row of kalasam finials
@@ -225,56 +244,88 @@ const ART = (() => {
     return s + "</svg>";
   };
 
-  // carved-in-teak reliefs for the door panels (face a little lighter than the panel field)
-  const teak = (c) => emboss(c, "#71401d", "rgba(14,5,1,.8)", "rgba(255,206,150,.3)");
-  const gopuramRelief = () => '<rect x="-27" y="14" width="54" height="9"/><path d="M-24 14L-21 4H21L24 14Z"/><path d="M-19 4L-16 -5H16L19 4Z"/><path d="M-14 -5L-11 -13H11L14 -5Z"/>' +
-    '<path d="M-10 -13C-10 -20 10 -20 10 -13Z"/><rect x="-2.2" y="-26" width="4.4" height="7" rx="2"/><circle cx="-7" cy="-18" r="1.6"/><circle cx="7" cy="-18" r="1.6"/>';
-  const gopuramShade = '<path d="M-4 23V17A4 4 0 0 1 4 17V23Z" fill="rgba(14,5,1,.75)"/>' + [-16, -8, 8, 16].map((x) => `<rect x="${x - 1.6}" y="7" width="3.2" height="5" fill="rgba(14,5,1,.6)"/>`).join("") + [-10, 0, 10].map((x) => `<rect x="${x - 1.4}" y="-2" width="2.8" height="4.5" fill="rgba(14,5,1,.6)"/>`).join("") + '<rect x="-1.3" y="-10" width="2.6" height="4" fill="rgba(14,5,1,.6)"/>';
-  const lotusRelief = () => '<path d="M0 -22C7 -11 7 2 0 12C-7 2 -7 -11 0 -22Z"/><path d="M0 12C-9 7 -16 -3 -17 -13C-8 -10 -2 -2 0 12Z"/><path d="M0 12C9 7 16 -3 17 -13C8 -10 2 -2 0 12Z"/>' +
-    '<path d="M0 13C-11 13 -20 6 -23 -2C-13 -4 -4 3 0 13Z"/><path d="M0 13C11 13 20 6 23 -2C13 -4 4 3 0 13Z"/><path d="M-12 15H12L8 20H-8Z"/>' +
-    '<path d="M-8 20C-14 21 -22 19 -27 13C-21 13 -14 15 -8 20Z"/><path d="M8 20C14 21 22 19 27 13C21 13 14 15 8 20Z"/><path d="M-1 20H1V25H-1Z"/>';
-  const lotusShade = '<path d="M0 -18C3 -10 3 0 0 8" fill="none" stroke="rgba(255,210,160,.35)" stroke-width=".8"/>';
-  const elephantRelief = () => '<ellipse cx="-4" cy="1" rx="15" ry="10"/><circle cx="11" cy="-4" r="7.5"/><path d="M16 -1C20 3 20 10 16 14C14.6 15.4 13 14 14 12.6C16.4 9.4 16 4 13 1Z"/>' +
-    '<rect x="-16" y="5" width="5" height="12" rx="1.5"/><rect x="-9" y="6" width="5" height="11" rx="1.5"/><rect x="2" y="6" width="5" height="11" rx="1.5"/><rect x="8" y="4" width="5" height="13" rx="1.5"/>' +
-    '<path d="M-19 0C-22 3 -22 7 -21 10L-19.6 10C-20.4 7 -20 4 -18 2Z"/><path d="M-12 -9H2V-1L-1 2L-4 -1L-7 2L-10 -1L-13 2Z"/>';
-  const elephantShade = '<path d="M7 -8C3 -7 3 2 7 3" fill="none" stroke="rgba(14,5,1,.7)" stroke-width="1"/><circle cx="13" cy="-6" r="1" fill="rgba(14,5,1,.85)"/><path d="M16 2L21 3" stroke="#efe0c0" stroke-width="1.4" stroke-linecap="round"/><path d="M-12 -9H2" stroke="rgba(201,146,58,.8)" stroke-width=".8"/>';
+  // carved teak: shapes are lit as a raised surface (top-left light) and cast a soft shadow into the recess
+  const relief = (c, fill = "#b27a45") => `<g filter="url(#dRelief)" fill="${fill}">${c}</g>`;
+  const gopuramRelief = () =>
+    relief('<rect x="-27" y="15" width="54" height="8" rx="1"/><path d="M-24 15L-21 5H21L24 15Z"/>') +
+    relief('<path d="M-19 5L-16 -4H16L19 5Z"/>') + relief('<path d="M-14 -4L-11.5 -12H11.5L14 -4Z"/>') +
+    relief('<path d="M-10 -12C-10 -20 10 -20 10 -12Z"/><rect x="-2" y="-27" width="4" height="9" rx="2"/>') +
+    '<path d="M-4.5 23V18A4.5 4.5 0 0 1 4.5 18V23Z" fill="#1a0a02"/>' +
+    [-16, -8, 8, 16].map((x) => `<path d="M${x - 1.8} 13V9A1.8 1.8 0 0 1 ${x + 1.8} 9V13Z" fill="#1d0b03"/>`).join("") +
+    [-9, 0, 9].map((x) => `<path d="M${x - 1.5} 3V-.5A1.5 1.5 0 0 1 ${x + 1.5} -.5V3Z" fill="#1d0b03"/>`).join("") + '<path d="M-1.3 -6V-9A1.3 1.3 0 0 1 1.3 -9V-6Z" fill="#1d0b03"/>';
+  const lotusRelief = () => {
+    const p = (len, w) => `<path d="M0 0C${w} ${-len * .25} ${w * .9} ${-len * .75} 0 ${-len}C${-w * .9} ${-len * .75} ${-w} ${-len * .25} 0 0Z"/>`;
+    let back = "", front = "";
+    [-62, -38, 38, 62].forEach((r) => (back += `<g transform="translate(0 10) rotate(${r})">${p(24, 7)}</g>`));
+    [-22, 0, 22].forEach((r) => (front += `<g transform="translate(0 10) rotate(${r})">${p(r ? 25 : 28, r ? 7.5 : 8)}</g>`));
+    const pads = '<path d="M-6 12C-14 10 -26 12 -30 18C-22 20 -12 18 -6 14Z"/><path d="M6 12C14 10 26 12 30 18C22 20 12 18 6 14Z"/>';
+    return relief(pads) + relief(back) + relief(front) + relief('<path d="M-9 10C-8 6 8 6 9 10C6 14 -6 14 -9 10Z"/>') +
+      '<path d="M0 -14V6M-6 -9L-3 6M6 -9L3 6" stroke="rgba(30,10,2,.45)" stroke-width=".7" fill="none"/>' +
+      [-5, -2, 1, 4].map((x, k) => `<circle cx="${x + .5}" cy="${9 + (k % 2) * .8}" r=".7" fill="#2a1204"/>`).join("");
+  };
+  // a side-on Asian elephant facing right, about 90 x 62
+  const elephantRelief = () =>
+    relief('<path d="M33 41L33 62H40L41 43Z"/><path d="M59 40L59 62H66L65 41Z"/>', "#5e3417") +
+    relief('<path d="M15 28C14 15 26 8 44 8C57 8 65 12 71 18L74 40C64 46 50 47 38 46C27 46 16 41 15 28Z"/>' +
+      '<path d="M62 14C66 5 78 2 86 7C92 11 93 20 91 27C90 32 86 35 81 36C76 37 71 35 68 31Z"/>' +
+      '<path d="M89 24C93 30 95 40 94 50C93 57 91 62 87 63C84 63.5 83 61 85 59.5C87.5 57 88.5 52 88 46C87.5 39 85 34 82 31Z"/>' +
+      '<path d="M66 36C66 46 67 55 67 63L76 63C76 55 76 46 75 37Z"/><path d="M20 34C20 46 21 55 21 63L30 63C30 55 31 46 32 40Z"/>' +
+      '<path d="M15 27C11 33 10 41 11 48L13 48C12.5 42 13.5 35 17 30Z"/><ellipse cx="12" cy="49" rx="2" ry="3"/>') +
+    relief('<path d="M36 9C46 8 56 10 62 14L60 34C52 37 42 37 34 35Z"/>', "#a13a3a") +
+    '<path d="M36 9C46 8 56 10 62 14L60 34C52 37 42 37 34 35Z" fill="none" stroke="url(#dBrass)" stroke-width="1.1"/>' +
+    [38, 42, 46, 50, 54, 58].map((x) => `<circle cx="${x}" cy="${f(36.2 - Math.abs(x - 47) * .08)}" r=".9" fill="url(#dStud)"/>`).join("") +
+    '<circle cx="48" cy="22" r="3.2" fill="none" stroke="url(#dBrass)" stroke-width=".9"/>' +
+    relief('<path d="M71 14C77 12 82 17 81 25C80 31 76 35 71 34C68 30 68 20 71 14Z"/>') +
+    '<ellipse cx="83.5" cy="17.5" rx="1.5" ry="1.1" fill="#140601"/><path d="M82 31C85 36 90 38 94 36C91 40 85 40 81 34Z" fill="#efe2c2" stroke="rgba(60,30,5,.5)" stroke-width=".4"/>' +
+    [[68, 63], [72, 63], [22, 63], [26, 63]].map(([x, y]) => `<path d="M${x - 1.6} ${y}A1.6 1.4 0 0 1 ${x + 1.6} ${y}Z" fill="#e8dcbf"/>`).join("");
   const cartouche = (w, h) => {
     const r = 4, o = (W, H) => `M${-W / 2 + r} ${-H / 2}H${W / 2 - r}A${r} ${r} 0 0 0 ${W / 2} ${-H / 2 + r}V${H / 2 - r}A${r} ${r} 0 0 0 ${W / 2 - r} ${H / 2}H${-W / 2 + r}A${r} ${r} 0 0 0 ${-W / 2} ${H / 2 - r}V${-H / 2 + r}A${r} ${r} 0 0 0 ${-W / 2 + r} ${-H / 2}Z`;
     let s = `<path fill-rule="evenodd" d="${o(w, h)}${o(w - 5, h - 5)}"/>`;
     [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sy]) => (s += `<g transform="translate(${f(sx * (w / 2 - 5))} ${f(sy * (h / 2 - 5))}) rotate(${f(Math.atan2(-sy, -sx) * 180 / Math.PI + 90)})">${petal(7, 2.4)}</g>`));
-    return s;
+    return relief(s);
   };
-  const beadBorder = (x, y, w, h) => {
-    let b = "";
-    for (let t = x + 4; t <= x + w - 4; t += 4) b += `<circle cx="${t}" cy="${y + 3.2}" r="1.1"/><circle cx="${t}" cy="${y + h - 3.2}" r="1.1"/>`;
-    for (let t = y + 7; t <= y + h - 7; t += 4) b += `<circle cx="${x + 3.2}" cy="${t}" r="1.1"/><circle cx="${x + w - 3.2}" cy="${t}" r="1.1"/>`;
-    return teak(b);
+  // a recessed panel: dark field, a raised moulded frame and a carved bead row inside it
+  const recess = (x, y, w, h) => {
+    let beads = "";
+    for (let t = x + 5; t <= x + w - 5; t += 3.6) beads += `<circle cx="${f(t)}" cy="${y + 4.6}" r=".95"/><circle cx="${f(t)}" cy="${y + h - 4.6}" r=".95"/>`;
+    for (let t = y + 8; t <= y + h - 8; t += 3.6) beads += `<circle cx="${x + 4.6}" cy="${f(t)}" r=".95"/><circle cx="${x + w - 4.6}" cy="${f(t)}" r=".95"/>`;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#2e1607"/><rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" fill="#3d1f0b"/>
+      <rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" fill="url(#dPanelAO)"/>` +
+      relief(`<path fill-rule="evenodd" d="M${x} ${y}h${w}v${h}h${-w}ZM${x + 2.4} ${y + 2.4}v${h - 4.8}h${w - 4.8}v${-h + 4.8}Z"/>`) + `<g filter="url(#dRelief)" fill="#b27a45">${beads}</g>`;
   };
-  const recess = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#45240e"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="rgba(0,0,0,.6)" stroke-width="1.3"/>
-    <path d="M${x} ${y + h}V${y}H${x + w}" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="2.2"/><path d="M${x + w} ${y}V${y + h}H${x}" fill="none" stroke="rgba(255,205,150,.14)" stroke-width="1.4"/>` + beadBorder(x, y, w, h);
 
   // one door leaf (the left one; the right one is mirrored in CSS), in the 100x365 half of the doorway.
-  // Carved teak in the manner of South Indian temple doors: gopuram, lotus and elephant reliefs, filigree panels with brass bosses.
+  // Carved teak after South Indian temple doors: each row holds two panels with the same carving.
   const doorLeaf = () => {
-    let s = '<svg viewBox="0 0 100 365" preserveAspectRatio="none" aria-hidden="true">';
+    const leafDefs = '<radialGradient id="dPanelAO" cx=".5" cy=".5" r=".72"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>' +
+      '<linearGradient id="dLeafLight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".1"/><stop offset=".5" stop-color="#ffd9a0" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient>';
+    const eleImg = svgImage("-4 -2 108 70", elephantRelief());
+    let s = "";
     s += '<rect width="100" height="365" fill="#5a3115" filter="url(#dGrain)"/><rect width="100" height="365" fill="url(#dHinge)"/>';
-    s += '<rect x="3" y="3" width="94" height="359" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="1.6"/>';
+    s += '<rect x="2.5" y="2.5" width="95" height="360" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="1.6"/>';
     // arched top: a carved teak lotus fan
-    s += '<rect x="9" y="6" width="80" height="88" fill="rgba(30,12,4,.35)"/>';
+    s += '<rect x="9" y="6" width="80" height="88" fill="#3d1f0b"/>';
     let fan = "";
     for (let i = 0; i < 9; i++) fan += `<g transform="rotate(${-80 + i * 20})">${petal(52, 8)}</g>`;
-    for (let i = 0; i < 7; i++) fan += `<g transform="rotate(${-72 + i * 24})">${petal(30, 6)}</g>`;
-    fan += '<path d="M-16 0A16 16 0 0 1 16 0Z"/>';
-    s += `<g transform="translate(92 92)">${teak(fan)}</g>`;
-    s += '<rect x="7" y="96" width="83" height="2.5" fill="url(#dBrass)"/>';
-    // panels, top to bottom
-    s += recess(10, 104, 76, 58) + `<g transform="translate(48 134) scale(1.05)">${teak(gopuramRelief())}${gopuramShade}</g>`;
-    [[10, 170], [50, 170]].forEach(([x, y]) => (s += recess(x, y, 36, 30) + `<g transform="translate(${x + 18} ${y + 15})">${teak(cartouche(28, 22))}</g>` + stud(x + 18, y + 15, 3.3)));
-    s += recess(10, 208, 76, 74) + `<g transform="translate(48 243) scale(1.25)">${teak(lotusRelief())}${lotusShade}</g>`;
-    s += recess(10, 290, 76, 62) + `<g transform="translate(46 320) scale(1.55)">${teak(elephantRelief())}${elephantShade}</g>`;
+    let fan2 = "";
+    for (let i = 0; i < 7; i++) fan2 += `<g transform="rotate(${-72 + i * 24})">${petal(30, 6)}</g>`;
+    s += `<g transform="translate(92 92)">${relief(fan)}${relief(fan2)}${relief('<path d="M-16 0A16 16 0 0 1 16 0Z"/>')}</g>`;
+    s += relief('<rect x="7" y="95" width="83" height="5"/>');
+    // six rows of two square panels, each carving sized to sit inside its square with a margin
+    const S = 36, cols = [10, 50], rows = [104, 146, 188, 230, 272, 314], slots = [];
+    const sq = (y, draw) => cols.map((x, c) => recess(x, y, S, S) + draw(x + S / 2, y + S / 2, c, x)).join("");
+    s += sq(rows[0], (cx, cy) => `<g transform="translate(${cx} ${cy + .5}) scale(.47)">${gopuramRelief()}</g>`);
+    [1, 3, 5].forEach((r) => (s += sq(rows[r], (cx, cy) => `<g transform="translate(${cx} ${cy})">${cartouche(25, 25)}</g>` + stud(cx, cy, 2.8))));
+    s += sq(rows[2], (cx, cy) => `<g transform="translate(${cx} ${cy - 1.5}) scale(.46)">${lotusRelief()}</g>`);
+    // elephants: the left one is drawn here; the facing one is a pixel-mirrored copy painted on later (see script.js)
+    s += sq(rows[4], (cx, cy, c, x) => {
+      if (c) { slots.push({ x: x + 3.5, y: rows[4] + 8.5, w: 29, h: 19 }); return ""; }
+      return `<image href="${eleImg}" x="${x + 3.5}" y="${rows[4] + 8.5}" width="29" height="19" preserveAspectRatio="none"/>`;
+    });
     // brass bosses where the rails meet, and a close row of studs down the hinge stile
-    [100, 166, 204, 286, 356].forEach((y) => [6, 48, 88].forEach((x) => (s += stud(x, y, 3))));
-    for (let y = 112; y < 352; y += 13) s += stud(5.5, y, 1.6);
+    [101, 143, 185, 227, 269, 311, 353].forEach((y) => [6, 48, 88].forEach((x) => (s += stud(x, y, 2.6))));
+    for (let y = 108; y < 350; y += 10.5) s += stud(5.2, y, 1.4);
+    s += '<rect width="100" height="365" fill="url(#dLeafLight)"/>';
     // engraved brass meeting strip
     s += '<rect x="90" y="0" width="10" height="365" fill="url(#dBrassV)"/><rect x="89" y="0" width="1.2" height="365" fill="rgba(0,0,0,.55)"/>';
     let eng = "";
@@ -283,14 +334,14 @@ const ART = (() => {
     for (let y = 13; y < 360; y += 20) s += stud(95, y, 1.4);
     // door pull: smooth brass shield plate with a slim drop ring
     const plate = "M0 -12C5 -8 6 -3 5 2C4 7 2 10 0 13C-2 10 -4 7 -5 2C-6 -3 -5 -8 0 -12Z";
-    s += `<g transform="translate(82 214)">
-      <path d="${plate}" fill="rgba(0,0,0,.55)" transform="translate(1 1.4)" filter="url(#dBlur)"/>
+    s += `<g transform="translate(83 196) scale(.85)">
+      <path d="${plate}" fill="rgba(0,0,0,.6)" transform="translate(1.2 1.8)" filter="url(#dBlur)"/>
       <path d="${plate}" fill="url(#dBrassV)" stroke="#4e3008" stroke-width=".7"/>
       <path d="M-1.6 -8C-3 -3 -3 3 -1.2 8" stroke="rgba(255,248,220,.75)" stroke-width="1" fill="none" stroke-linecap="round"/>
       <circle cy="13" r="2" fill="url(#dStud)"/>
-      <ellipse cx=".8" cy="21.6" rx="6.4" ry="7.4" fill="none" stroke="rgba(0,0,0,.5)" stroke-width="2.2"/>
+      <ellipse cx="1" cy="22" rx="6.4" ry="7.4" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="2.4" filter="url(#dBlur)"/>
       <ellipse cy="20.6" rx="6.4" ry="7.4" fill="none" stroke="url(#dBrass)" stroke-width="2"/></g>`;
-    return s + "</svg>";
+    return { leaf: svgImage("0 0 100 365", s, leafDefs), elephant: eleImg, slots };
   };
 
   // mango-leaf thoranam with marigolds across the doorway, and marigold strings down both sides

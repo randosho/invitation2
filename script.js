@@ -115,6 +115,30 @@ new IntersectionObserver((es, o) => es.some((e) => e.isIntersecting) && (setTime
 /* cover: the first tap opens the temple doors and starts the music (the tap is what lets the browser play sound) */
 const cover = $("cover");
 $("cvWay").style.clipPath = ART.doorClip();
+/* The door leaves are lit with SVG lighting filters, which Chrome renders black when the drawing is mirrored.
+   So each leaf is painted into a pixel canvas first; the facing elephant and the right-hand leaf are mirrored as pixels. */
+(async function paintLeaves() {
+  const parts = ART.doorLeaf(), way = $("cvWay");
+  const load = (src) => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = src; });
+  const canvas = (w, h) => Object.assign(document.createElement("canvas"), { width: w, height: h });
+  try {
+    const [leafImg, eleImg] = await Promise.all([load(parts.leaf), load(parts.elephant)]);
+    const k = Math.min(3, (window.devicePixelRatio || 1) * 1.25), w = Math.ceil((way.clientWidth / 2) * k) || 300, h = Math.ceil(way.clientHeight * k) || 1100;
+    const A = canvas(w, h), a = A.getContext("2d");
+    a.drawImage(leafImg, 0, 0, w, h);
+    parts.slots.forEach((sl) => {
+      const ew = Math.ceil((sl.w / 100) * w), eh = Math.ceil((sl.h / 365) * h), E = canvas(ew, eh);
+      E.getContext("2d").drawImage(eleImg, 0, 0, ew, eh);
+      a.save(); a.translate(((sl.x + sl.w) / 100) * w, (sl.y / 365) * h); a.scale(-1, 1); a.drawImage(E, 0, 0); a.restore();
+    });
+    const B = canvas(w, h), b = B.getContext("2d");
+    b.translate(w, 0); b.scale(-1, 1); b.drawImage(A, 0, 0);
+    document.querySelector(".cv-leaf.lf").replaceChildren(A);
+    document.querySelector(".cv-leaf.rt").replaceChildren(B);
+  } catch (e) {
+    document.querySelectorAll(".cv-leaf").forEach((el) => (el.innerHTML = `<img src="${parts.leaf}" alt="">`));
+  }
+})();
 for (let i = 0; i < 16; i++) {
   const d = document.createElement("i"), dur = 9 + Math.random() * 9;
   d.style.cssText = `left:${Math.random() * 100}%;--dx:${(Math.random() - 0.5) * 80}px;animation-duration:${dur}s;animation-delay:-${Math.random() * dur}s;opacity:0;transform:scale(${0.6 + Math.random() * 0.8})`;
