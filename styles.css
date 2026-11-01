@@ -217,16 +217,42 @@ form .btn{width:100%;margin-top:4px}
 .sound.hint{animation:soundpulse 1.6s ease-out infinite}
 @keyframes soundpulse{0%{box-shadow:0 0 0 0 rgba(185,138,60,.55)}100%{box-shadow:0 0 0 14px rgba(185,138,60,0)}}
 
-/* cover: the first tap opens the invitation and lets the music start */
+/* cover: a glowing wine and gold entrance. The first tap opens the invitation and lets the music start. */
 body.locked{overflow:hidden}
-#cover{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;background:var(--paper);cursor:pointer;overflow:hidden;transition:opacity .8s ease,transform .9s ease}
-#cover.gone{opacity:0;transform:scale(1.05);pointer-events:none}
-.cover-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75}
-.cover-toran{position:relative;z-index:2;width:min(100%,430px);display:block;transform-origin:top center;animation:sway 7s ease-in-out infinite}
-.cover-in{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:0 24px 60px;text-align:center}
-.cover-ganesha{height:96px;width:auto}
-.cover-names{font-size:52px;line-height:1.35;padding:.1em .24em .2em;width:fit-content;max-width:100%}
-.cover-seal{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;margin-top:8px;
-  background:radial-gradient(circle at 34% 30%,#f7d784,#d99a2b 45%,#a86f14);box-shadow:0 8px 20px rgba(120,70,0,.45),inset 0 -3px 6px rgba(90,50,0,.4),inset 0 2px 4px rgba(255,240,200,.7);animation:pulse 3.2s ease-in-out infinite}
-.cover-seal .script{font-size:36px;color:#5d3603;line-height:1;padding-top:3px}
-.cover-hint{font-family:var(--caps);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#8a5410}
+#cover{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;overflow:hidden;cursor:pointer;
+  background:radial-gradient(ellipse 90% 60% at 50% 45%,#a32a4e 0,#741c33 42%,#450e1e 78%,#2f0813 100%);transition:opacity .9s ease,transform 1s ease}
+#cover.gone{opacity:0;transform:scale(1.08);pointer-events:none}
+.cover-mandala{position:absolute;left:50%;top:46%;width:520px;margin:-260px 0 0 -260px;opacity:.28;animation:spin 120s linear infinite;pointer-events:none}
+.cover-mandala svg{filter:brightness(1.7)}
+#cover .petals{z-index:3}
+.cover-toran{position:relative;z-index:4;width:min(100%,430px);display:block;transform-origin:top center;animation:sway 7s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+.cover-in{position:relative;z-index:4;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 24px 90px;text-align:center}
+.cover-kicker{font-family:var(--caps);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#f0cf8a;padding-left:.34em}
+.cover-ganesha{height:84px;width:auto;filter:drop-shadow(0 0 14px rgba(247,215,132,.55));animation:glowp 3s ease-in-out infinite alternate}
+.cover-names{font-size:58px;line-height:1.3;padding:.08em .24em .18em;width:fit-content;max-width:100%;
+  background:linear-gradient(110deg,#e8a93c 0%,#f7d784 30%,#fff3c4 50%,#f7d784 70%,#e8a93c 100%);background-size:220% auto;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 5s linear infinite;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+.cover-date{font-family:var(--caps);font-size:12px;letter-spacing:.36em;padding-left:.36em;color:#f0cf8a}
+.cover-seal{position:relative;width:104px;height:104px;margin:18px 0 6px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 34% 30%,#fbe6a8,#e0a834 45%,#a86f14);
+  box-shadow:0 0 0 4px rgba(255,236,170,.25),0 0 38px rgba(255,200,90,.65),0 10px 24px rgba(0,0,0,.45),inset 0 -4px 8px rgba(90,50,0,.4),inset 0 3px 5px rgba(255,245,210,.8);
+  animation:pulse 2.6s ease-in-out infinite}
+.cover-seal .script{font-size:40px;color:#5a0a24;line-height:1;padding-top:3px;text-shadow:0 1px 0 rgba(255,240,200,.6)}
+.cover-seal .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,225,150,.75);animation:ripple 2.6s ease-out infinite;pointer-events:none}
+.cover-seal .ring.r2{animation-delay:1.3s}
+@keyframes ripple{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.1);opacity:0}}
+.cover-seal .spark{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;pointer-events:none;opacity:0;animation:twinkle 2.6s ease-in-out infinite;
+  background:linear-gradient(#fff,#fff) center/1.5px 100% no-repeat,linear-gradient(#fff,#fff) center/100% 1.5px no-repeat,radial-gradient(circle,#fff 0,rgba(255,240,180,.7) 25%,transparent 65%)}
+.cover-seal .s1{left:-4%;top:22%}.cover-seal .s2{left:104%;top:30%;animation-delay:.6s}.cover-seal .s3{left:90%;top:96%;animation-delay:1.2s}.cover-seal .s4{left:8%;top:100%;animation-delay:1.8s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.2) rotate(0)}45%{opacity:1;transform:scale(1.1) rotate(45deg)}70%{opacity:0;transform:scale(.4) rotate(70deg)}}
+.cover-btn{position:relative;margin-top:6px}
+.cover-btn span{display:inline-block;position:relative;overflow:hidden;padding:13px 34px;border-radius:999px;border:1px solid rgba(247,215,132,.85);
+  font-family:var(--caps);font-size:13px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#fbeab8;background:rgba(255,226,150,.1);
+  box-shadow:0 0 22px rgba(255,200,90,.35);animation:btnglow 2.2s ease-in-out infinite alternate}
+.cover-btn span::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;transform:skewX(-20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:sweep 3s ease-in-out infinite}
+@keyframes btnglow{from{box-shadow:0 0 12px rgba(255,200,90,.2)}to{box-shadow:0 0 30px rgba(255,200,90,.6)}}
+@keyframes sweep{0%,55%{left:-60%}100%{left:130%}}
+.cover-lamps{position:absolute;left:50%;bottom:-2px;width:150%;max-width:none;transform:translateX(-50%);z-index:5;pointer-events:none}
+@media (max-height:700px){.cover-names{font-size:46px}.cover-ganesha{height:64px}.cover-seal{width:88px;height:88px;margin:8px 0 2px}.cover-in{gap:6px;padding-bottom:70px}}
+@media(prefers-reduced-motion:reduce){#cover *{animation:none!important}}
+.cover-in{padding-top:36px}
