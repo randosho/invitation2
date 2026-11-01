@@ -55,32 +55,18 @@ tick(); setInterval(tick, 1000);
 const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.1 });
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-/* music: assets/music.mp3 if present would be easy to add; otherwise a soft generated loop */
+/* music: assets/music.mp3, started on the first tap (browsers need a tap before audio can play) */
 const soundBtn = $("sound");
-let ctx, master, timer, on = false;
-function startSynth() {
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if (!AC) return;
-  if (!ctx) {
-    ctx = new AC(); master = ctx.createGain(); master.connect(ctx.destination);
-    const len = ctx.sampleRate * 2, buf = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3; }
-    const rev = ctx.createConvolver(); rev.buffer = buf; const wet = ctx.createGain(); wet.gain.value = 0.5;
-    master.connect(rev); rev.connect(wet); wet.connect(ctx.destination);
-    let step = 0; const chords = [[50, 57, 62, 66], [47, 54, 59, 62], [43, 50, 55, 59], [45, 52, 57, 61]];
-    const hz = (m) => 440 * 2 ** ((m - 69) / 12);
-    const note = (m, t, dur, vel) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "triangle"; o.frequency.value = hz(m);
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vel, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0008, t + dur); o.connect(g); g.connect(master); o.start(t); o.stop(t + dur); };
-    const bar = () => { const t0 = ctx.currentTime + 0.05, ch = chords[step++ % 4];
-      note(ch[0] - 12, t0, 4, 0.14); [0, 1, 2, 3, 2, 3, 1, 2].forEach((x, i) => note(ch[x] + (i % 4 === 3 ? 12 : 0), t0 + i * 0.6, 2.2, 0.08));
-      timer = setTimeout(bar, 4740); };
-    bar();
-  }
-  ctx.resume(); master.gain.value = 0.5;
+const bgm = new Audio("assets/music.mp3");
+bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0.7;
+let on = false;
+function setSound(v) {
+  on = v; soundBtn.classList.toggle("off", !v);
+  if (v) bgm.play().catch(() => { on = false; soundBtn.classList.add("off"); });
+  else bgm.pause();
 }
-function setSound(v) { on = v; soundBtn.classList.toggle("off", !v); if (v) startSynth(); else if (master) master.gain.value = 0; }
 soundBtn.addEventListener("click", () => setSound(!on));
-document.addEventListener("visibilitychange", () => ctx && (document.hidden ? ctx.suspend() : on && ctx.resume()));
+document.addEventListener("visibilitychange", () => { if (on) document.hidden ? bgm.pause() : bgm.play().catch(() => {}); });
 
 /* envelope: opens on tap, or on its own once scrolled into view */
 const env = $("env"), invite = $("invitation");

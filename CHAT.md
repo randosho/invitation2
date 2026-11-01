@@ -16,7 +16,7 @@ wine envelope with a gold seal, peach countdown. Do not merge the two designs.
    - `index.html`: sections: hero, invitation (envelope), bride and groom, countdown, events, venue, footer
    - `styles.css`: tokens, paper texture, envelope, petals, tiles
    - `art.js`: toran, kalash, lamps, banana leaves, mandala, ornaments
-   - `script.js`: `CONFIG`, countdown, petals, envelope open, generated music loop
+   - `script.js`: `CONFIG`, countdown, petals, envelope open, background music (assets/music.mp3)
 4. Published a private preview as an artifact and checked it in headless Chromium at 390px.
 
 ## Details supplied by the user
