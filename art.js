@@ -153,7 +153,7 @@ const ART = (() => {
     let s = `<svg viewBox="0 0 400 600" aria-hidden="true"><defs>
       <filter id="dGrain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
         <feTurbulence type="fractalNoise" baseFrequency="0.012 0.24" numOctaves="3" seed="7" result="n"/>
-        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .18  0 0 0 0 .02  0 0 0 0 .04  1.6 0 0 0 -.66" result="g"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .09  0 0 0 0 .045  0 0 0 0 .015  1.7 0 0 0 -.66" result="g"/>
         <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge></filter>
       <filter id="dStoneTex" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
         <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
@@ -228,10 +228,10 @@ const ART = (() => {
   // one door leaf (the left one; the right one is mirrored in CSS), in the 100x365 half of the doorway
   const doorLeaf = () => {
     let s = '<svg viewBox="0 0 100 365" preserveAspectRatio="none" aria-hidden="true">';
-    s += '<rect width="100" height="365" fill="#6e1529" filter="url(#dGrain)"/><rect width="100" height="365" fill="url(#dHinge)"/>';
+    s += '<rect width="100" height="365" fill="#5a3115" filter="url(#dGrain)"/><rect width="100" height="365" fill="url(#dHinge)"/>';
     s += '<rect x="3" y="3" width="94" height="359" fill="none" stroke="url(#dBrass)" stroke-width="1.3"/>';
     // the arched top panel: a gold lotus fan rising from the top rail
-    s += '<rect x="9" y="6" width="80" height="88" fill="rgba(40,4,12,.35)"/>';
+    s += '<rect x="9" y="6" width="80" height="88" fill="rgba(30,12,4,.35)"/>';
     let fan = "";
     for (let i = 0; i < 9; i++) fan += `<g transform="rotate(${-80 + i * 20})">${petal(52, 8)}</g>`;
     for (let i = 0; i < 7; i++) fan += `<g transform="rotate(${-72 + i * 24})">${petal(30, 6)}</g>`;
@@ -241,7 +241,7 @@ const ART = (() => {
     // grid of small carved panels, two across, five down
     for (let r = 0; r < 5; r++) for (let c = 0; c < 2; c++) {
       const x = 10 + c * 40, y = 106 + r * 48;
-      s += `<rect x="${x}" y="${y}" width="36" height="40" fill="#4a0b19"/><rect x="${x}" y="${y}" width="36" height="40" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/>`;
+      s += `<rect x="${x}" y="${y}" width="36" height="40" fill="#3f210e"/><rect x="${x}" y="${y}" width="36" height="40" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="1.2"/>`;
       s += `<rect x="${x + 3}" y="${y + 3}" width="30" height="34" fill="none" stroke="#c9923a" stroke-width=".8"/>`;
       s += `<g transform="translate(${x + 18} ${y + 20}) scale(.82)">${goldE(rosette(8, 3, 9))}</g>`;
     }
@@ -271,25 +271,20 @@ const ART = (() => {
     };
     // side strings
     const L = sampleQ(99, 252, 94, 340, 101, 430, 8.5), R = sampleQ(301, 252, 306, 340, 299, 430, 8.5);
-    s += marigoldString(L, 13) + marigoldString(R, 13);
-    [L[L.length - 1], R[R.length - 1]].forEach(([x, y]) => {
-      s += `<g transform="translate(${f(x)} ${f(y + 6)})"><path d="M0 0C5 8 5 18 0 26C-5 18 -5 8 0 0Z" fill="url(#lgD)"/><path d="M0 2V24" stroke="#1f5a0c" stroke-width=".7"/></g>`;
-    });
-    // thoranam string across, with mango leaves hanging and marigolds between them
-    const T = sampleQ(96, 250, 200, 262, 304, 250, 10.5);
-    s += `<path d="M${T.map((p) => p.map(f).join(" ")).join("L")}" stroke="#6b4a1e" stroke-width="1.2" fill="none"/>`;
+    const tip = ([x, y]) => `<g transform="translate(${f(x)} ${f(y + 6)})"><path d="M0 0C5 8 5 18 0 26C-5 18 -5 8 0 0Z" fill="url(#lgD)"/><path d="M0 2V24" stroke="#1f5a0c" stroke-width=".7"/></g>`;
+    // each part sits in its own group so it can sway from its own hanging point (see .g-* in styles.css)
+    s += `<g class="g-side g-l">${marigoldString(L, 13)}${tip(L[L.length - 1])}</g><g class="g-side g-r">${marigoldString(R, 13)}${tip(R[R.length - 1])}</g>`;
+    // thoranam in a W: two swags from the sides rise to a raised centre tie, with a long pendant dropping from the centre
+    const sw1 = sampleQ(99, 252, 148, 322, 200, 196, 8.2), sw2 = sampleQ(200, 196, 252, 322, 301, 252, 8.2);
+    const pend = sampleQ(200, 200, 202, 245, 200, 292, 8.2);
     let leaves = "", balls = "";
-    T.forEach(([x, y], i) => {
-      if (i % 2 === 0) {
-        const len = 26 + rnd() * 8, rot = (rnd() - 0.5) * 16;
-        leaves += `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(rot)})"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="url(#${rnd() > .5 ? "lgD" : "lgL"})" stroke="#1f5a0c" stroke-width=".5"/><path d="M0 1V${f(len - 2)}" stroke="rgba(20,60,8,.7)" stroke-width=".6"/></g>`;
-        leaves += `<g transform="translate(${f(x + 2)} ${f(y + 3)}) rotate(${f(rot)})" opacity=".25"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="#2a1000" filter="url(#dBlur)"/></g>`;
-      } else {
-        const z = 12 + rnd() * 2;
-        balls += `<use href="#${i % 4 === 1 ? "mgB" : "mgA"}" x="${f(x - z / 2)}" y="${f(y - z / 2)}" width="${f(z)}" height="${f(z)}"/>`;
-      }
-    });
-    s += leaves + balls;
+    const leafAt = (x, y, len, rot) => `<g transform="translate(${f(x + 2)} ${f(y + 3)}) rotate(${f(rot)})" opacity=".25"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="#2a1000" filter="url(#dBlur)"/></g>
+      <g transform="translate(${f(x)} ${f(y)}) rotate(${f(rot)})"><path d="M0 0C6 ${f(len * .3)} 6 ${f(len * .7)} 0 ${f(len)}C-6 ${f(len * .7)} -6 ${f(len * .3)} 0 0Z" fill="url(#${rnd() > .5 ? "lgD" : "lgL"})" stroke="#1f5a0c" stroke-width=".5"/><path d="M0 1V${f(len - 2)}" stroke="rgba(20,60,8,.7)" stroke-width=".6"/></g>`;
+    [sw1, sw2].forEach((sw) => sw.forEach(([x, y], i) => { if (i % 2 === 0 && i > 0 && i < sw.length - 1) leaves += leafAt(x, y + 3, 20 + rnd() * 8, (rnd() - 0.5) * 18); }));
+    balls += marigoldString(sw1, 13) + marigoldString(sw2, 13);
+    const pendant = leafAt(200, 294, 32, 0) + leafAt(197, 292, 25, 24) + leafAt(203, 292, 25, -24) + marigoldString(pend, 12) + `<use href="#mgB" x="191" y="285" width="18" height="18"/>`;
+    const knots = [[200, 196, 20], [99, 252, 17], [301, 252, 17]].map(([x, y, z]) => `<use href="#mgA" x="${x - z / 2}" y="${y - z / 2}" width="${z}" height="${z}"/>`).join("");
+    s += `<g class="g-w">${leaves}${balls}</g><g class="g-pend">${pendant}</g>${knots}`;
     return s + "</svg>";
   };
 
