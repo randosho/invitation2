@@ -212,3 +212,7 @@ form .btn{width:100%;margin-top:4px}
 .foot{padding-top:16px}
 .foot-text{min-height:460px;padding:0}
 .foot .foot-overlay{margin-top:-14px}
+
+/* the speaker pulses while the music is waiting for a first tap */
+.sound.hint{animation:soundpulse 1.6s ease-out infinite}
+@keyframes soundpulse{0%{box-shadow:0 0 0 0 rgba(185,138,60,.55)}100%{box-shadow:0 0 0 14px rgba(185,138,60,0)}}

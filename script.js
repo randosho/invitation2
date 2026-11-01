@@ -55,32 +55,41 @@ tick(); setInterval(tick, 1000);
 const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.1 });
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-/* music: assets/music.mp3, on by default. Browsers only allow sound after a tap, so if autoplay is
-   blocked it starts on the visitor's first tap or key press. The speaker button mutes and unmutes. */
+/* music: assets/music.mp3. Browsers refuse sound until the visitor taps or presses a key (scrolling does not
+   count), so the page tries to play on load and, if that is blocked, starts on the first tap anywhere.
+   The speaker button always shows what is really happening and mutes or restarts the music. */
 const soundBtn = $("sound");
 const bgm = new Audio("assets/music.mp3");
 bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0.25;
-let on = true;
-soundBtn.classList.remove("off");
-const GESTURES = ["pointerup", "touchend", "click", "keydown"];
-function unlock() {
-  if (!on) return;
-  bgm.play().then(() => GESTURES.forEach((g) => removeEventListener(g, unlock, true))).catch(() => {});
+let wanted = true; // the visitor has not asked for silence
+const GESTURES = ["pointerdown", "pointerup", "touchend", "click", "keydown"];
+function showState() {
+  const playing = !bgm.paused;
+  soundBtn.classList.toggle("off", !playing);
+  soundBtn.classList.toggle("hint", wanted && !playing); // pulse while waiting for the first tap
 }
-bgm.play().catch(() => GESTURES.forEach((g) => addEventListener(g, unlock, true)));
-function setSound(v) {
-  on = v; soundBtn.classList.toggle("off", !v);
-  if (v) bgm.play().catch(() => {}); else bgm.pause();
+function tryPlay() { return bgm.play().then(showState, () => { showState(); throw 0; }); }
+function unlock(e) {
+  if (!wanted || !bgm.paused || (e.target.closest && e.target.closest("#sound"))) return;
+  tryPlay().then(() => GESTURES.forEach((g) => removeEventListener(g, unlock, true)), () => {});
 }
-soundBtn.addEventListener("click", (e) => { e.stopPropagation(); setSound(!on); });
-document.addEventListener("visibilitychange", () => { if (on) document.hidden ? bgm.pause() : bgm.play().catch(() => {}); });
+bgm.addEventListener("playing", showState);
+bgm.addEventListener("pause", showState);
+GESTURES.forEach((g) => addEventListener(g, unlock, true));
+tryPlay().catch(() => {});
+soundBtn.addEventListener("click", () => {
+  if (bgm.paused) { wanted = true; tryPlay().catch(() => {}); } else { wanted = false; bgm.pause(); }
+  showState();
+});
+document.addEventListener("visibilitychange", () => { if (wanted) document.hidden ? bgm.pause() : bgm.play().catch(() => {}); });
+showState();
 
 /* envelope: opens on tap, or on its own once scrolled into view */
 const env = $("env"), invite = $("invitation");
 function openEnv(fromTap) {
   if (env.classList.contains("open")) return;
   env.classList.add("open"); invite.classList.add("open"); env.setAttribute("aria-expanded", "true");
-  if (fromTap && on) bgm.play().catch(() => {});
+  if (fromTap && wanted && bgm.paused) tryPlay().catch(() => {});
 }
 env.addEventListener("click", () => openEnv(true));
 env.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openEnv(true)));
